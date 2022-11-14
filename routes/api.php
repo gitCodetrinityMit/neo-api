@@ -29,3 +29,17 @@ Route::get('/user-list', [AuthController::class, 'userList'])->name('users');
 Route::post('/signup-user', [AuthController::class, 'signupUser'])->name('user.signup');
 Route::post('/signin-user',[AuthController::class, 'signinUser'])->name('user.signin');
 Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name('user.forgotpassword');
+
+
+/*
+|--------------------------------------------------------------------------
+| Product Route API
+|--------------------------------------------------------------------------
+*/
+
+
+/*
+|--------------------------------------------------------------------------
+| Category Route API
+|--------------------------------------------------------------------------
+*/
