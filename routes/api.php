@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,10 +38,18 @@ Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name(
 | Product Route API
 |--------------------------------------------------------------------------
 */
-
+Route::get('/product', [ProductController::class, 'listProduct'])->name('product.list');
+Route::post('/product', [ProductController::class, 'addProduct'])->name('product.add');
+Route::get('/product/{id}', [ProductController::class, 'editProduct'])->name('product.edit');
+Route::post('/product/{id}',[ProductController::class, 'deleteProduct'])->name('product.delete');
 
 /*
 |--------------------------------------------------------------------------
 | Category Route API
 |--------------------------------------------------------------------------
 */
+Route::get('/category', [CategoryController::class, 'listCategory'])->name('category.list');
+Route::post('/category', [CategoryController::class,'addCategory'])->name('category.add');
+Route::get('/category/{id}', [CategoryController::class, 'editCategory'])->name('category.edit');
+Route::post('/category/{id}', [CategoryController::class, 'updateCategory'])->name('category.update');
+Route::delete('/category/{id}', [CategoryController::class, 'deleteCategory'])->name('category.delete');
