@@ -84,9 +84,13 @@ class ProductSeeder extends Seeder
         // Product Images 
         $product_image = [
             ['id'=>1, 'product_id'=>'1','image'=>'product/1.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>2, 'product_id'=>'2','image'=>'product/2.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>3, 'product_id'=>'3','image'=>'product/3.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>4, 'product_id'=>'4','image'=>'product/4.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
+            ['id'=>2, 'product_id'=>'1','image'=>'product/5.png','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
+            ['id'=>3, 'product_id'=>'2','image'=>'product/2.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
+            ['id'=>4, 'product_id'=>'2','image'=>'product/6.png','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
+            ['id'=>5, 'product_id'=>'3','image'=>'product/3.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
+            ['id'=>6, 'product_id'=>'3','image'=>'product/7.png','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
+            ['id'=>7, 'product_id'=>'4','image'=>'product/4.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
+            ['id'=>8, 'product_id'=>'4','image'=>'product/8.png','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
         ];
 
         // Product Add In DataBase

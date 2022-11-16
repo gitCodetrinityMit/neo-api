@@ -41,7 +41,8 @@ Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name(
 Route::get('/product', [ProductController::class, 'listProduct'])->name('product.list');
 Route::post('/product', [ProductController::class, 'addProduct'])->name('product.add');
 Route::get('/product/{id}', [ProductController::class, 'editProduct'])->name('product.edit');
-Route::post('/product/{id}',[ProductController::class, 'deleteProduct'])->name('product.delete');
+Route::delete('/product/{id}',[ProductController::class, 'deleteProduct'])->name('product.delete');
+Route::post('/product/{id}', [ProductController::class, 'updateProduct'])->name('product.update');
 
 /*
 |--------------------------------------------------------------------------
