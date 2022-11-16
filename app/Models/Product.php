@@ -22,4 +22,14 @@ class Product extends Model
     public function category(){
         return $this->belongsTo(Category::class);
     }
+
+    /**
+     * Product related with product-gallery table for relation Between Product and Product Gallery Fields.
+     *
+     * @return Relation
+     * 
+     */
+    public function productimages(){
+        return $this->hasMany(ProductGallery::class,'product_id','id');
+    }
 }

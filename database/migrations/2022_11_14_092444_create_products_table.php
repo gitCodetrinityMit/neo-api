@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreign('category_id')->references('id')->on('categories');
             $table->string('selling_price');
             $table->string('regular_price');
-            $table->string('images');
+            // $table->string('images');
             $table->text('description');
             $table->string('stock');
             $table->string('status')->default(0);
