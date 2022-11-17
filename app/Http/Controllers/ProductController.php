@@ -37,6 +37,7 @@ class ProductController extends Controller
         $validator = Validator::make($request->all(),[
             'name'          =>      'required|string|min:5',
             'category_id'   =>      'required',
+            'slug'          =>      'required|alpha_dash|unique:products'
             // 'images'        =>      'required|image|mimes:png,jpg,jpeg',
         ]);
 
@@ -44,16 +45,13 @@ class ProductController extends Controller
             return response()->json(['error' => $validator->messages()],401);
         }
 
-        // Generate Unique Slug Validation
-        $rules = [];
-        $rules['slug'] = 'unique:products';
-
         // Slug Create
         $slug = $request->slug;
         if (! $slug) {
             $slug = Str::slug(@$request->name);
         }
 
+        // If Product Slug Already Existing Then Create Unique New Slug
         $productavailable = Product::where('slug', $slug)->count();
         if ($productavailable) {
             $lastproduct = Product::orderBy('id', 'desc')->first();
@@ -123,15 +121,12 @@ class ProductController extends Controller
     public function updateProduct(Request $request,$id)
     {
         $product = Product::where('id',$id)->first();
-        
-         // Generate Unique Slug Validation
-        $rules = [];
-        $rules['slug'] = 'unique:products';
 
         // Validation Check For Update Product
         $validator = Validator::make($request->all(),[
             'name'          =>      'required|string|min:5',
             'category_id'   =>      'required',
+            'slug'          =>      'required|alpha_dash|unique:products'
         //  'images'        =>      'required|image|mimes:png,jpg,jpeg',
         ]);
 

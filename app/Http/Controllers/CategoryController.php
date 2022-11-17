@@ -34,7 +34,8 @@ class CategoryController extends Controller
     {
         // Validation Check For Add Category
         $validator = Validator::make($request->all(),[
-            'name'      =>      'required|string'
+            'name'      =>      'required|string',
+            'slug'      =>      'required|alpha_dash|unique:categories'
         ]);
 
         if($validator->fails()){
