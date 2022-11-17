@@ -17,9 +17,13 @@ class CategoryController extends Controller
      */
     public function listCategory()
     {
-        $category = Category::latest('id')->get();
+        // Get All Parent Top Level Category
+        $parentCategories = Category::select('id','parent_id', 'slug','name','status')->where('parent_id', 0)->get();
 
-        return response()->json(['category' =>  $category],200);
+        // Get Nestable Data
+        $categories = Category::nestable($parentCategories);
+
+        return response()->json(['category' =>  $categories],200);
     }
 
     /**
@@ -42,10 +46,6 @@ class CategoryController extends Controller
             return response()->json(['error' => $validator->messages()],401);
         }
 
-        // Generate Unique Slug Validation
-        $rules = [];
-        $rules['slug'] = 'unique:categories';
-
         // Slug Create
         $slug = $request->slug;
         if (! $slug) {
@@ -62,6 +62,7 @@ class CategoryController extends Controller
         $category = new Category();
         $category->name = $request->name;
         $category->slug = $slug;
+        $category->parent_id = $request->parent_id;
         $category->status = $request->status;
         $category->save();
 
@@ -78,7 +79,12 @@ class CategoryController extends Controller
      */
     public function editCategory($id)
     {
-        $category = Category::where('id',$id)->first();
+        $category = Category::with(['parent' => function($query){
+            $query->select('id','slug','name');
+        }])
+        ->select('id','name','slug','parent_id','status')
+        ->where('id',$id)
+        ->first();
 
         if($category){
             return response()->json(['success' => $category],200);
@@ -91,9 +97,14 @@ class CategoryController extends Controller
     {
         $category = Category::where('id', $id)->first();
 
-        // Generate Unique Slug Validation
-        $rules = [];
-        $rules['slug'] = 'unique:categories';
+        // Validation Check For Update Category Slug
+        $validator = Validator::make($request->all(),[
+            'slug'      =>      'required|alpha_dash|unique:categories'
+        ]);
+
+        if($validator->fails()){
+            return response()->json(['error' => $validator->messages()],401);
+        }
 
         //Slug Create
         $slug = $request->slug;
@@ -109,6 +120,7 @@ class CategoryController extends Controller
         $update_category = [
             'name'      =>      $request->name,
             'slug'      =>      $slug,
+            'parent_id' =>      $request->parent_id,
             'status'    =>      $request->status
         ];
 

@@ -15,44 +15,19 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = [
-            [
-                'id' => 1,    
-                'slug' => 'men',
-                'name' => 'Men',
-                'status' => 1,
-                'created_at' => '2021-08-26 06:37:47',
-                'updated_at' => '2021-08-26 06:37:47'
-            ],
-            [
-                'id'    =>  2,
-                'slug' => 'woman',
-                'name' => 'Woman',
-                'status' => 1,
-                'created_at' => '2021-08-26 06:37:47',
-                'updated_at' => '2021-08-26 06:37:47'
-            ],
-            [
-                'id'    =>  3,
-                'slug' => 'electronics',
-                'name' => 'Electronics',
-                'status' => 1,
-                'created_at' => '2021-08-26 06:37:47',
-                'updated_at' => '2021-08-26 06:37:47'
-            ],
-            [
-                'id'    =>  4,
-                'slug' => 'jwellary',
-                'name' => 'Jwellary',
-                'status' => 1,
-                'created_at' => '2021-08-26 06:37:47',
-                'updated_at' => '2021-08-26 06:37:47'
-            ]
-        ];
+        $categoryid = [1,7,9,10,32,33,42,43,46,47,102,103,104,106,107,117,118];
+        $category = ['men','women','tops','Bottoms','Tops','Bottoms','Shirts','Jackets','Jeans','Shorts','Shirts','Jackets','Dresses','Shorts','Skirts','jeans','accessories'];
+        $categoryparentId = [0,0,1,1,7,7,9,9,10,10,32,32,32,33,33,33,0];
 
         // Category Add Data In DataBase
-        foreach ($categories as $category) {
-            Category::insert($category);
+        foreach ($category as $k => $cat) {
+            $categ = new Category();
+            $categ->id = @$categoryid[$k];
+            $categ->slug = @$cat;
+            $categ->parent_id = @$categoryparentId[$k];
+            $categ->name = @$cat;
+            $categ->status = 1;
+            $categ->save();
         }
     }
 }

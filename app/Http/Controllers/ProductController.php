@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function listProduct() 
     {
         // Product Listing
-        $products = Product::with('product_galleries')->latest('id')->get();
+        $products = Product::with('product_galleries','category')->latest('id')->get();
 
         return response()->json(['products' => $products],200);
     }
