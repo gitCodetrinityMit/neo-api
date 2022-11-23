@@ -17,10 +17,26 @@ class ProductController extends Controller
      * @return JSON $json
      * 
      */
-    public function listProduct() 
+    public function listProduct(Request $request) 
     {
         // Product Listing
-        $products = Product::with('product_galleries','category')->latest('id')->get();
+        $products = Product::with('product_galleries','category')->select('id','name','slug','sku','category_id','selling_price','regular_price','description','stock','status');
+
+        // Product Search With Multiple Category Wise
+        $category = $request->category;
+        $category_ids = explode(",", $category);
+
+        if($request->category){
+            $products = $products->whereIn('category_id',$category_ids);
+        }
+
+        // Product Search Name Wise
+        if($request->search){
+            $products = $products->where('name', 'like', '%' .$request->search .'%'); 
+        }
+        
+        $paginate = $request->show ? $request->show : 10;
+        $products = $products->latest()->paginate($paginate);
 
         return response()->json(['products' => $products],200);
     }
