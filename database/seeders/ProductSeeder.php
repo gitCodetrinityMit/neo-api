@@ -7,6 +7,7 @@ use App\Models\ProductGallery;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
@@ -22,7 +23,7 @@ class ProductSeeder extends Seeder
                 'id'    => 1,
                 'name' => 'Product 1',
                 'slug' => 'product-1',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 1,
                 'selling_price' => 1500,
                 'regular_price' => 2000,
@@ -34,7 +35,7 @@ class ProductSeeder extends Seeder
                 'id'    => 2,
                 'name' => 'Product 2',
                 'slug' => 'product-2',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 2,
                 'selling_price' => 4000,
                 'regular_price' => 5000,
@@ -46,7 +47,7 @@ class ProductSeeder extends Seeder
                 'id'    => 3,
                 'name' => 'Product 3',
                 'slug' => 'product-3',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 3,
                 'selling_price' => 6000,
                 'regular_price' => 7000,
@@ -58,7 +59,7 @@ class ProductSeeder extends Seeder
                 'id'    => 4,
                 'name' => 'Product 4',
                 'slug' => 'product-4',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 4,
                 'selling_price' => 9000,
                 'regular_price' => 9500,
@@ -70,7 +71,7 @@ class ProductSeeder extends Seeder
                 'id'    => 5,
                 'name' => 'Product 5',
                 'slug' => 'product-5',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 5,
                 'selling_price' => 9000,
                 'regular_price' => 9500,
@@ -82,7 +83,7 @@ class ProductSeeder extends Seeder
                 'id'    => 6,
                 'name' => 'Sub Category Product 6',
                 'slug' => 'sub-category-product-6',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 6,
                 'selling_price' => 8000,
                 'regular_price' => 8500,
@@ -94,7 +95,7 @@ class ProductSeeder extends Seeder
                 'id'    => 7,
                 'name' => 'Sub Category Product 7',
                 'slug' => 'sub-category-product-7',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 7,
                 'selling_price' => 1000,
                 'regular_price' => 2000,
@@ -106,7 +107,7 @@ class ProductSeeder extends Seeder
                 'id'    => 8,
                 'name' => 'Sub Category Product 8',
                 'slug' => 'sub-category-product-8',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 8,
                 'selling_price' => 2500,
                 'regular_price' => 3000,
@@ -118,7 +119,7 @@ class ProductSeeder extends Seeder
                 'id'    => 9,
                 'name' => 'Sub Category Product 9',
                 'slug' => 'sub-category-product-9',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 9,
                 'selling_price' => 4500,
                 'regular_price' => 5000,
@@ -130,7 +131,7 @@ class ProductSeeder extends Seeder
                 'id'    => 10,
                 'name' => 'Sub Category Product 10',
                 'slug' => 'sub-category-product-10',
-                'sku' => '',
+                'sku' => Str::random(10),
                 'category_id' => 10,
                 'selling_price' => 4500,
                 'regular_price' => 5000,
@@ -147,12 +148,26 @@ class ProductSeeder extends Seeder
 
         // Product Images 
         $product_image = [
-            ['id'=>1, 'product_id'=>'1','image'=>'product/1.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>2, 'product_id'=>'1','image'=>'product/5.png','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>3, 'product_id'=>'2','image'=>'product/2.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>4, 'product_id'=>'2','image'=>'product/6.png','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>5, 'product_id'=>'3','image'=>'product/3.jpg','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47'],
-            ['id'=>6, 'product_id'=>'3','image'=>'product/7.png','created_at' => '2021-08-26 06:37:47','updated_at' => '2021-08-26 06:37:47']
+            ['id'=>1, 'product_id'=>'1','image'=>'product/1.jpg'],
+            ['id'=>2, 'product_id'=>'1','image'=>'product/2.jpg'],
+            ['id'=>3, 'product_id'=>'2','image'=>'product/3.jpg'],
+            ['id'=>4, 'product_id'=>'2','image'=>'product/4.jpg'],
+            ['id'=>5, 'product_id'=>'3','image'=>'product/5.png'],
+            ['id'=>6, 'product_id'=>'3','image'=>'product/6.png'],
+            ['id'=>7, 'product_id'=>'4','image'=>'product/7.png'],
+            ['id'=>8, 'product_id'=>'4','image'=>'product/8.jpg'],
+            ['id'=>9, 'product_id'=>'5','image'=>'product/9.jpg'],
+            ['id'=>10, 'product_id'=>'5','image'=>'product/10.jpg'],
+            ['id'=>11, 'product_id'=>'6','image'=>'product/11.jpg'],
+            ['id'=>12, 'product_id'=>'6','image'=>'product/12.jpg'],
+            ['id'=>13, 'product_id'=>'7','image'=>'product/13.png'],
+            ['id'=>14, 'product_id'=>'7','image'=>'product/14.png'],
+            ['id'=>15, 'product_id'=>'8','image'=>'product/15.png'],
+            ['id'=>16, 'product_id'=>'8','image'=>'product/16.png'],
+            ['id'=>17, 'product_id'=>'9','image'=>'product/17.png'],
+            ['id'=>18, 'product_id'=>'9','image'=>'product/18.png'],
+            ['id'=>19, 'product_id'=>'10','image'=>'product/19.png'],
+            ['id'=>20, 'product_id'=>'10','image'=>'product/20.png']
         ];
 
         // Product Add In DataBase
