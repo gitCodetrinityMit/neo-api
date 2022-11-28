@@ -20,7 +20,7 @@ class ProductController extends Controller
     public function listProduct(Request $request) 
     {
         // Product Listing
-        $products = Product::with('product_galleries','category')->select('id','name','slug','sku','category_id','selling_price','regular_price','description','stock','status');
+        $products = Product::with('product_galleries','category')->select('id','name','slug','sku','category_id','selling_price','regular_price','description','stock','status')->orderBy('id','asc');
 
         // Product Search With Multiple Category Wise
         $category = $request->category;
