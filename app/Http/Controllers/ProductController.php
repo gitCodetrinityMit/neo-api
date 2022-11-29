@@ -159,7 +159,7 @@ class ProductController extends Controller
 
         if($validator->fails()){
             return response()->json(['error' => $validator->messages()],401);
-        }
+        } 
 
         //Slug Create
         $slug = $request->slug;
