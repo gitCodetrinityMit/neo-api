@@ -157,7 +157,7 @@ class ProductController extends Controller
         //  'images'        =>      'required|image|mimes:png,jpg,jpeg',
         ]);
 
-        if($validator->fails()){
+        if($validator->fails()){ 
             return response()->json(['error' => $validator->messages()],401);
         } 
 
