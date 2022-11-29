@@ -35,7 +35,7 @@ class ProductController extends Controller
             $products = $products->where('name', 'like', '%' .$request->search .'%'); 
         }
 
-        // Product Filter
+        // Product Filter Add
         if ($request->has('min_price') && $request->has('max_price')) {
             $min = $request->input('min_price');
             $max = $request->input('max_price');
