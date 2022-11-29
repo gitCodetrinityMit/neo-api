@@ -34,7 +34,18 @@ class ProductController extends Controller
         if($request->search){
             $products = $products->where('name', 'like', '%' .$request->search .'%'); 
         }
-        
+
+        // Product Filter
+        if ($request->has('min_price') && $request->has('max_price')) {
+            $min = $request->input('min_price');
+            $max = $request->input('max_price');
+            $products = $products->newQuery()
+	            ->whereRaw('regular_price >= ?',$min)
+                ->whereRaw('regular_price <= ?',$max);
+        }else{
+            $products = Product::with('product_galleries','category')->select('id','name','slug','sku','category_id','selling_price','regular_price','description','stock','status')->orderBy('id','asc');
+        }
+
         $paginate = $request->show ? $request->show : 10;
         $products = $products->latest()->paginate($paginate);
 
