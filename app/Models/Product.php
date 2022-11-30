@@ -27,6 +27,10 @@ class Product extends Model
 
                 $images->delete();
             });
+
+            $products->product_category()->each(function($detail){
+                $detail->delete();
+            });
         });
     }
 
@@ -48,5 +52,10 @@ class Product extends Model
      */
     public function product_galleries(){
         return $this->hasMany(ProductGallery::class,'product_id','id');
+    }
+
+    public function product_category()
+    {
+        return $this->hasMany(ProductCategory::class,'product_id','id');
     }
 }

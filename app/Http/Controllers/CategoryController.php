@@ -18,7 +18,8 @@ class CategoryController extends Controller
     public function listCategory()
     {
         // Get All Parent Top Level Category
-        $parentCategories = Category::select('id','parent_id', 'slug','name','status')->where('parent_id', 0)->get();
+        $parentCategories = Category::select('id','parent_id', 'slug','name','status','created_at')
+        ->where('parent_id', 0)->get();
 
         // Get Nestable Data
         $categories = Category::nestable($parentCategories);
