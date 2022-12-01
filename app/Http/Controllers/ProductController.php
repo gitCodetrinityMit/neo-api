@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\ProductGallery;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -21,25 +22,36 @@ class ProductController extends Controller
     {
   
         // Product Listing
-        $products = Product::with('product_galleries','category')->select('id','name','slug','sku','category_id','selling_price','regular_price','description','stock','status')->orderBy('id','asc');
+        $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','stock','status','created_at')->orderBy('id','asc');
 
-        // Product Search With Multiple Category Wise
-        $category = $request->category;
-        $category_ids = explode(",", $category);
+        $product = $product->with(['product_galleries' => function($q){
+            $q->select('id','product_id','image');
+        }]);
 
-        if($request->category){
-            $products = $products->whereIn('category_id',$category_ids);
+        // Product Price Filter
+        if ($request->has('min_price') && $request->has('max_price')) {
+            $min = $request->min_price;
+            $max = $request->max_price;
+            $product = $product->whereRaw('regular_price >= ?',$min)->whereRaw('regular_price <= ?',$max);
         }
 
-        // Product Search Name Wise
+        // Product Search
         if($request->search){
-            $products = $products->where('name', 'like', '%' .$request->search .'%'); 
+           $product = $product->where('name','like','%'.$request->search.'%');
         }
-        
-        $paginate = $request->show ? $request->show : 10;
-        $products = $products->latest()->paginate($paginate);
 
-        return response()->json(['products' => $products],200);
+        // Product Category Search Multiple Category Id Wise        
+        if ($request->category) {
+            $arr = explode(",", $request->category);
+            $product = $product->whereHas('product_category', function ($query) use ($arr) {
+                $query->whereIn('category_id', $arr);
+            });
+        }
+
+        $paginate = $request->show ? $request->show : 15;
+        $product = $product->latest()->paginate($paginate);
+
+        return response()->json(['products' => $product],200);
     }
 
     /**
@@ -81,15 +93,25 @@ class ProductController extends Controller
         $product->name = $request->name;
         $product->slug = $slug;
         $product->sku = $request->sku ?: Str::random(10);
-        $product->category_id = $request->category_id;
         $product->selling_price = $request->selling_price;
         $product->regular_price = $request->regular_price;
-        // $product->images = implode(",",$images);
         $product->description = $request->description;
         $product->stock = $request->stock;
         $product->status = $request->status;
         $product->save();
-// return '123';
+
+        // Product Category Add
+        if($product->save()){
+            $category_id = $request->category_id;
+            $category_ids = explode(",", $category_id);
+            foreach ($category_ids as $value) {
+                $product_category = new ProductCategory();
+                $product_category->product_id = $product->id;
+                $product_category->category_id = $value;
+                $product_category->save();
+            }
+        }
+        
         // Product Images Store
         $image_name = '';
         $files = $request->images;
@@ -143,14 +165,14 @@ class ProductController extends Controller
         // Validation Check For Update Product
         $validator = Validator::make($request->all(),[
             'name'          =>      'required|string|min:5',
-            'category_id'   =>      'required',
+            // 'category_id'   =>      'required',
             'slug'          =>      'required|alpha_dash|unique:products'
         //  'images'        =>      'required|image|mimes:png,jpg,jpeg',
         ]);
 
-        if($validator->fails()){
+        if($validator->fails()){ 
             return response()->json(['error' => $validator->messages()],401);
-        }
+        } 
 
         //Slug Create
         $slug = $request->slug;
@@ -166,13 +188,32 @@ class ProductController extends Controller
             'name'          =>      $request->name,
             'slug'          =>      $slug,
             'sku'           =>      $request->sku ?: Str::random(10),
-            'category_id'   =>      $request->category_id,
             'selling_price' =>      $request->selling_price,
             'regular_price' =>      $request->regular_price,
             'description'   =>      $request->description,
             'stock'         =>      $request->stock,
             'status'        =>      $request->status,
         ];
+
+        // Product Category Delete
+        $category = $request->category;
+        $deletecatIds = explode("," , $request->removeoldcategory);
+        foreach($deletecatIds as $value){
+            $categoryname = ProductCategory::where('id', $value)->first();
+            if($categoryname){
+                ProductCategory::where('id', $value)->delete();
+            }
+        }
+        if($category != null){
+            $category_id = $request->category;
+            $category_ids = explode(",", $category_id);
+            foreach ($category_ids as $value) {
+                $product_category = new ProductCategory();
+                $product_category->product_id = $product->id;
+                $product_category->category_id = $value;
+                $product_category->save();
+            }
+        }
 
         //Product Images Delete In Folder
         $files = $request->images;

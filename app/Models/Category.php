@@ -56,4 +56,9 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    public function product_category()
+    {
+        return $this->hasMany(ProductCategory::class,'category_id','id');
+    }
 }
