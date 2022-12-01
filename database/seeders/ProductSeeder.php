@@ -172,12 +172,9 @@ class ProductSeeder extends Seeder
 
         // Product Add In DataBase
         foreach ($product_image as $images) {
-<<<<<<< HEAD
             File::copy(public_path('assets/images/seederImages/'.$images['image']), public_path('storage/'.$images['image']));
             ProductGallery::insert($images);
-=======
             ProductGallery::create($images);
->>>>>>> d7c57c4d9bdaffbce4286310d38c45ff325651d3
 
         }
     }
