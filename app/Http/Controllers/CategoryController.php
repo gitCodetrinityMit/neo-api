@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
@@ -49,7 +51,7 @@ class CategoryController extends Controller
 
         // Slug Create
         $slug = $request->slug;
-        if (! $slug) {
+        if (!$slug) {
             $slug = Str::slug(@$request->name);
         }
 
@@ -97,24 +99,15 @@ class CategoryController extends Controller
     public function updateCategory(Request $request,$id)
     {
         $category = Category::where('id', $id)->first();
-
-        // Validation Check For Update Category Slug
-        $validator = Validator::make($request->all(),[
-            'slug'      =>      'required|alpha_dash|unique:categories'
-        ]);
-
-        if($validator->fails()){
-            return response()->json(['error' => $validator->messages()],401);
-        }
-
-        //Slug Create
+                
+        // Slug Create
         $slug = $request->slug;
-        if (! $slug) {
+        if(!$slug){
             $slug = Str::slug(@$request->name);
         }
-        $productavailble = Category::where('slug', $slug)->where('id', '!=', $id)->count();
-        if ($productavailble) {
-            $slug = $slug.'-'.($category->id);
+        $categoryavailable = Category::where('slug', $slug)->where('id', '!=', $request->id)->count();
+        if($categoryavailable){
+            $slug = $slug.'-'. Str::random(3);
         }
 
         // Update Category
@@ -141,8 +134,9 @@ class CategoryController extends Controller
     public function deleteCategory($id)
     {
         $category = Category::where('id',$id)->first();
-
+        
         if($category){
+            Product::with('product_category')->where('id',$id)->delete();
             $category->delete();
             return response()->json(['success' => 'Category Deleted Success'],200);
         }else{
