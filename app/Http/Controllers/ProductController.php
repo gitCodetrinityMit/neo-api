@@ -20,6 +20,7 @@ class ProductController extends Controller
      */
     public function listProduct(Request $request) 
     {
+  
         // Product Listing
         $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','stock','status','created_at')->orderBy('id','asc');
 
@@ -61,11 +62,12 @@ class ProductController extends Controller
      */
     public function addProduct(Request $request)
     {
+        // return $request->name;
         // Validation Check For Add Product
         $validator = Validator::make($request->all(),[
-            'name'          =>      'required|string|min:5',
-            'category_id'   =>      'required',
-            'slug'          =>      'required|alpha_dash|unique:products'
+            // 'name'          =>      'required|string|min:5',
+            // 'category_id'   =>      'required',
+            // 'slug'          =>      'required|alpha_dash|unique:products'
             // 'images'        =>      'required|image|mimes:png,jpg,jpeg',
         ]);
 
@@ -85,7 +87,7 @@ class ProductController extends Controller
             $lastproduct = Product::orderBy('id', 'desc')->first();
             $slug = $slug.'-'.($lastproduct->id + 1);
         }
-
+        // dd(Product::first());
         // Product Store
         $product = new Product();
         $product->name = $request->name;
@@ -109,7 +111,7 @@ class ProductController extends Controller
                 $product_category->save();
             }
         }
-
+        
         // Product Images Store
         $image_name = '';
         $files = $request->images;
