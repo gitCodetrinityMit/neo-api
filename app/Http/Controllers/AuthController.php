@@ -60,7 +60,7 @@ class AuthController extends Controller
         $user->last_name = $request->last_name;
         $user->password = Hash::make($request->password);
         $user->user_type = $request->user_type;
-        $user->remember_token = Str::random(30);
+        $user->remember_token = Str::random(25);
         $user->save();
 
         $userdata = array(
@@ -70,8 +70,9 @@ class AuthController extends Controller
 
         Auth::attempt($userdata);
         return response()->json([
-            'success'   =>  $user["user_name"] . ' Created Success',
+            'success'   =>  $user["user_name"] . ' User Created',
             'user'      =>  $user,
+            // 'token'     =>  $user->createToken("API TOKEN")->plainTextToken,
         ],200);
     }
 
@@ -102,11 +103,10 @@ class AuthController extends Controller
         
         if (Auth::attempt($userdata))
         {
-            $user = Auth::user();
-            $token = $user["remember_token"];
+            $user = User::where('email',$request->email)->first();
             return response()->json([
                 'success' => 'Login sucecessfully',
-                'token' =>  $token
+                'token' =>   $user->createToken("API TOKEN")->plainTextToken
             ], 200);
         }else{
               $error = 'Your Email Or Password is Wrong!!';
