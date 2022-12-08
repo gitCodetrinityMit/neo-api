@@ -2,36 +2,30 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
-use App\Models\Wishlist;
+use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class WhistlistController extends Controller
+class CartController extends Controller
 {
-    /**
-     * Product Wishlist Data
-     *
-     * @return JOSN $json
-     * 
-     */
-    public function index() {
+    public function index()
+    {
         if(Auth::check()){
-            $wishlist = Wishlist::with('products')->where('user_id','=',auth()->user()->id)->get();   
-            return response()->json(['success' => $wishlist],200); 
+            $cart_list = Cart::with('products')->where('user_id','=',auth()->user()->id)->select('user_id','product_id')->get();
+            return response()->json(['success' => $cart_list],200);
         }else{
-            return response()->json(['error' => 'Login First!!!'],401);
+            return response()->json(['error' => 'Login To Continue!!!'],401);
         }
     }
 
     /**
-     * Product Add In Wishlist
+     * Add Product In Cart
      *
      * @return Message (error or success)
      * 
      */
-    public function addWishlistProduct(Request $request)
+    public function addProductCart(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'product_id' => 'required',
@@ -43,16 +37,16 @@ class WhistlistController extends Controller
         
         if(Auth::check()){
             
-            $wishlist = Wishlist::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
+            $wishlist = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
 
             if (empty($wishlist)) {
-                $wishlist = new Wishlist();
+                $wishlist = new Cart();
                 $wishlist->user_id = auth()->user()->id;
                 $wishlist->product_id = $request->product_id;
                 $wishlist->save();
-                return response()->json(['success' => 'Product Add To Wishlist'], 200);
+                return response()->json(['success' => 'Product Add To Cart'], 200);
             }else{
-                return response()->json(['errro' => 'Already In Wishlist'], 401);
+                return response()->json(['errro' => 'Already In Cart'], 401);
             }
         }else{
             return response()->json(['error' =>  'You Are Not LoggedIn!!!'],401);
@@ -60,27 +54,26 @@ class WhistlistController extends Controller
     }
 
     /**
-     * Remove Product From Wishlist
+     * Remove Product From Cart
      *
      * @param Request $request
      * 
      * @return Message (error or success)
      * 
      */
-    public function removeWishlistProduct(Request $request)
+    public function removeCartProduct(Request $request)
     {
         if(Auth::check()){
-            $product = Wishlist::with('products','product_galleries')
+            $product = Cart::with('products','product_galleries')
             ->where('user_id',auth()->user()->id)->where('product_id',$request->product_id)->first();
             if($product){
                 $product->delete(); 
-                return response()->json(['success' => 'Product Remove From Wishlist'],200);
+                return response()->json(['success' => 'Product Remove From Cart'],200);
             }else{
                 return response()->json(['error' => 'Product Id Error!!!'],401);
             }
         }else{
             return response()->json(['error' => 'Login To Continue!!!'],401);
         }
-        
     }
 }

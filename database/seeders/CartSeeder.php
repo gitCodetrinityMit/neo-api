@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Wishlist;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Cart;
 
-class WhishlistSeeder extends Seeder
+class CartSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,29 +15,27 @@ class WhishlistSeeder extends Seeder
      */
     public function run()
     {
-        $wishlists = [
+        $carts = [
             [
                 'user_id'   =>  1,
-                'product_id'    =>  1,
-            ],[
+                'product_id'    =>1,
+            ],
+            [
                 'user_id'   =>  1,
-                'product_id'    =>  2,
-            ],[
-                'user_id'   =>  1,
-                'product_id'    =>  3,
-            ],[
-                'user_id'   =>  2,
-                'product_id'    =>  2,
-            ],[
+                'product_id'   =>   2, 
+            ],
+            [
                 'user_id'   =>  2,
                 'product_id'    =>  3,
-            ],[
+            ],
+            [
                 'user_id'   =>  2,
                 'product_id'    =>  4,
             ]
         ];
-        foreach ($wishlists as $wishlist) {
-            Wishlist::create($wishlist);
+        
+        foreach ($carts as $cart_value) {
+            Cart::create($cart_value);
         }
     }
 }

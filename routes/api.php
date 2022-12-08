@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WhistlistController;
@@ -29,20 +30,34 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 Route::get('/user-list', [AuthController::class, 'userList'])->name('users');
-Route::get('/user-list/{id}', [AuthController::class, 'userList'])->name('users');
+Route::get('/user-list/{id}', [AuthController::class, 'userGet'])->name('users.get');
 Route::post('/signup-user', [AuthController::class, 'signupUser'])->name('user.signup');
 Route::post('/signin-user',[AuthController::class, 'signinUser'])->name('user.signin');
 Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name('user.forgotpassword');
+Route::post('/remove-user/{id}', [AuthController::class, 'removeUser'])->name('user.remove');
 
 /*
 |--------------------------------------------------------------------------
 | Wishlist Route API
 |--------------------------------------------------------------------------
 */
-Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get')->middleware('auth:sanctum');
-Route::post('/add-wishlist', [WhistlistController::class, 'addWishlistProduct'])->name('product.add-wishlist')->middleware('auth:sanctum');
-Route::post('/remove-wishlist', [WhistlistController::class, 'removeWishlistProduct'])->name('product.remove-wishlist')->middleware('auth:sanctum');
+Route::group(['middleware'=>'auth:sanctum'], function() {
+    Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get');
+    Route::post('/add-wishlist', [WhistlistController::class, 'addWishlistProduct'])->name('product.add-wishlist');
+    Route::post('/remove-wishlist', [WhistlistController::class, 'removeWishlistProduct'])->name('product.remove-wishlist');
+});
 
+/*
+|--------------------------------------------------------------------------
+| 
+Cart Route API
+|--------------------------------------------------------------------------
+*/
+Route::group(['middleware'=>'auth:sanctum'], function() {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.list');
+    Route::post('/add-cart', [CartController::class, 'addProductCart'])->name('add.cart');
+    Route::post('/remove-cart-item', [CartController::class, 'removeCartProduct'])->name('remove.cart.item');
+});
 /*
 |--------------------------------------------------------------------------
 | Product Route API

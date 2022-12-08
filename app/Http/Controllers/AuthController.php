@@ -29,6 +29,20 @@ class AuthController extends Controller
     }
 
     /**
+     * User Detail Id Wise
+     *
+     * @param mixed $id
+     * 
+     * @return JSON $json
+     * 
+     */
+    public function userGet($id)
+    {
+        $user = User::where('id',$id)->first(); 
+        return response()->json(['user' => $user],200); 
+    }
+
+    /**
      * Sign Up User Detail
      *
      * @return Message (error or success)
@@ -106,7 +120,7 @@ class AuthController extends Controller
             $user = User::where('email',$request->email)->first();
             return response()->json([
                 'success' => 'Login sucecessfully',
-                'token' =>   $user->createToken("API TOKEN")->plainTextToken
+                'api_token' =>   $user->createToken("api_token")->plainTextToken
             ], 200);
         }else{
               $error = 'Your Email Or Password is Wrong!!';
@@ -166,6 +180,26 @@ class AuthController extends Controller
             return response()->json([
                 'user_error'    =>  'Email User Error, Try Again!!!'
             ],401);
+        }
+    }
+
+    /**
+     * Remove User 
+     *
+     * @param mixed $id
+     * 
+     * @return Message (error or success)
+     * 
+     */
+    public function removeUser($id)
+    {
+        $user = User::where('id',$id)->first();
+
+        if($user){
+            $user->delete();
+            return response()->json(['success' => 'User Remove success'],200);
+        }else{
+            return response()->json(['error' => 'User Delete Error!!!'],401);
         }
     }
 }
