@@ -9,6 +9,16 @@ class ProductCategory extends Model
 {
     use HasFactory;
 
+    public static function boot() {
+        parent::boot();
+
+        self::deleting(function($products) {
+            $products->products()->each(function($detail){
+                $detail->delete();
+            });
+        });
+    }
+
     public function products()
     {
         return $this->belongsTo(Product::class);

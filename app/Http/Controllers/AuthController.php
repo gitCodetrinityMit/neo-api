@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -42,7 +43,7 @@ class AuthController extends Controller
             'first_name'        =>     'required',
             'last_name'         =>     'required',
             'password'          =>     'required|string|min:8|max:12',
-            'remember_token'    =>     'required'
+            // 'remember_token'    =>     'required'
         ]);
 
         if($validator->fails()){
@@ -59,7 +60,7 @@ class AuthController extends Controller
         $user->last_name = $request->last_name;
         $user->password = Hash::make($request->password);
         $user->user_type = $request->user_type;
-        $user->remember_token = $request->remember_token;
+        $user->remember_token = Str::random(30);
         $user->save();
 
         $userdata = array(

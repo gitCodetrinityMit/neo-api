@@ -40,8 +40,8 @@ class Category extends Model
                 $children->delete();
             });
 
-            $category->products()->each(function($product) {
-                $product->delete();
+            $category->product_category()->each(function($product_category) {
+                $product_category->delete();
             });
         });
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\WhistlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,11 +29,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 Route::get('/user-list', [AuthController::class, 'userList'])->name('users');
+Route::get('/user-list/{id}', [AuthController::class, 'userList'])->name('users');
 Route::post('/signup-user', [AuthController::class, 'signupUser'])->name('user.signup');
 Route::post('/signin-user',[AuthController::class, 'signinUser'])->name('user.signin');
 Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name('user.forgotpassword');
 
-
+/*
+|--------------------------------------------------------------------------
+| Wishlist Route API
+|--------------------------------------------------------------------------
+*/
+Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get');
 /*
 |--------------------------------------------------------------------------
 | Product Route API

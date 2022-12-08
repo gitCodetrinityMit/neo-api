@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use Illuminate\Support\Facades\File;
+use App\Models\Wishlist;
 
 class Product extends Model
 {
@@ -57,5 +58,10 @@ class Product extends Model
     public function product_category()
     {
         return $this->hasMany(ProductCategory::class,'product_id','id');
+    }
+
+    public function wishlist()
+    {
+        return $this->hasMany(Wishlist::class);
     }
 }
