@@ -27,7 +27,6 @@ class ProductController extends Controller
         $product = $product->with(['product_galleries' => function($q){
             $q->select('id','product_id','image');
         }]);
-
         // Product Price Filter
         if ($request->has('min_price') && $request->has('max_price')) {
             $min = $request->min_price;
