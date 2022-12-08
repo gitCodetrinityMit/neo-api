@@ -141,7 +141,7 @@ class ProductController extends Controller
      */
     public function editProduct($id)
     {
-        $product = Product::where('id',$id)->first();
+        $product = Product::with('product_galleries','product_category')->where('id',$id)->first();
         if($product){
             return response()->json(['success' => $product],200);
         }else{
