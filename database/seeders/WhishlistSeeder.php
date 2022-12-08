@@ -25,14 +25,6 @@ class WhishlistSeeder extends Seeder
             ],[
                 'user_id'   =>  1,
                 'product_id'    =>  3,
-            ],
-            [
-                'user_id'   =>  3,
-                'product_id'    =>  1,
-            ],
-            [
-                'user_id'   =>  3,
-                'product_id'    =>  2,
             ]
         ];
         foreach ($wishlists as $wishlist) {
