@@ -39,7 +39,7 @@ Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name(
 | Wishlist Route API
 |--------------------------------------------------------------------------
 */
-Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get');
+Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get')->middleware('auth:sanctum');
 /*
 |--------------------------------------------------------------------------
 | Product Route API
