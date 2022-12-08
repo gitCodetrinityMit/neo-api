@@ -40,6 +40,9 @@ Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name(
 |--------------------------------------------------------------------------
 */
 Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get')->middleware('auth:sanctum');
+Route::post('/add-wishlist', [WhistlistController::class, 'addWishlistProduct'])->name('product.add-wishlist')->middleware('auth:sanctum');
+Route::post('/remove-wishlist', [WhistlistController::class, 'removeWishlistProduct'])->name('product.remove-wishlist')->middleware('auth:sanctum');
+
 /*
 |--------------------------------------------------------------------------
 | Product Route API
