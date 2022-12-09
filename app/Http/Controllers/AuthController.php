@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Cart;
 use App\Models\Wishlist;
+use Illuminate\Support\Facades\File;
 
 class AuthController extends Controller
 {
@@ -42,6 +43,58 @@ class AuthController extends Controller
     {
         $user = User::where('id',$id)->first(); 
         return response()->json(['user' => $user],200); 
+    }
+
+    /**
+     * Update User Detail In DataBase
+     *
+     * @return Message (error opr suceess)
+     * 
+     */
+    public function updateUser(Request $request)
+    {
+        // Get User Detail
+        $user = User::where('id',$request->id)->first();
+
+        // Update User Profile
+        $profile_name = $user->profile;
+        if($request->file('profile')){
+            // Validation Check For Update Profile
+            $validator = Validator::make($request->all(),[
+                'profile' =>  'required|image|mimes:jpg,png,jpeg'
+            ]);
+
+            if($validator->fails()){
+                return response()->json(['error' => $validator->messages()],401);
+            }
+
+            // Delete Old Profile Image From Folder
+            $path = public_path(). "/storage/$user->profile";
+            $result = File::exists($path);
+            if($result){
+                File::delete($path);
+            }
+            
+            // Select New Image
+            $image = $request->file('profile');
+            $profile_name = 'profile/'. rand(10000000,99999999). "." .$image->getClientOriginalExtension();
+            $image->move(public_path('storage/profile/'),$profile_name);            
+        }else{
+            $profile_name = $user->profile;
+        }
+
+        // Update User Detail
+        $update_user = [
+            'user_name' =>  $request->user_name,
+            'email'     =>  $request->email,
+            'first_name' =>  $request->first_name,
+            'last_name' =>  $request->last_name,
+            'user_type' =>  $request->user_type,
+            'profile'   =>  $profile_name
+        ];
+
+        User::where('id',$request->id)->update($update_user);
+        return response()->json(['success' => 'User Detail Updated Success'],200);
     }
 
     /**

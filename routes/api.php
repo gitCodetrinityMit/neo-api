@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 */
 Route::get('/user-list', [AuthController::class, 'userList'])->name('users');
 Route::get('/user-list/{id}', [AuthController::class, 'userGet'])->name('users.get');
+Route::post('/user-update', [AuthController::class, 'updateUser'])->name('user.update');
 Route::post('/signup-user', [AuthController::class, 'signupUser'])->name('user.signup');
 Route::post('/signin-user',[AuthController::class, 'signinUser'])->name('user.signin');
 Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name('user.forgotpassword');
