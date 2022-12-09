@@ -22,7 +22,7 @@ class ProductController extends Controller
     {
   
         // Product Listing
-        $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','stock','status','created_at')->orderBy('id','asc');
+        $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status','created_at')->orderBy('id','asc');
 
         $product = $product->with(['product_galleries' => function($q){
             $q->select('id','product_id','image');
@@ -95,6 +95,7 @@ class ProductController extends Controller
         $product->selling_price = $request->selling_price;
         $product->regular_price = $request->regular_price;
         $product->description = $request->description;
+        $product->short_description = $request->short_description;
         $product->stock = $request->stock;
         $product->status = $request->status;
         $product->save();
@@ -190,6 +191,7 @@ class ProductController extends Controller
             'selling_price' =>      $request->selling_price,
             'regular_price' =>      $request->regular_price,
             'description'   =>      $request->description,
+            'short_description' => $request->short_description,
             'stock'         =>      $request->stock,
             'status'        =>      $request->status,
         ];

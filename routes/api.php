@@ -35,6 +35,7 @@ Route::post('/signup-user', [AuthController::class, 'signupUser'])->name('user.s
 Route::post('/signin-user',[AuthController::class, 'signinUser'])->name('user.signin');
 Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name('user.forgotpassword');
 Route::post('/remove-user/{id}', [AuthController::class, 'removeUser'])->name('user.remove');
+Route::post('/logout', [AuthController::class, 'logout'])->name('user.logout');
 
 /*
 |--------------------------------------------------------------------------

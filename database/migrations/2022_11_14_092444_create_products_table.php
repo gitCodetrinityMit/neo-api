@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('selling_price');
             $table->string('regular_price');
             $table->text('description');
+            $table->string('short_description')->nullable();
             $table->string('stock');
             $table->string('status')->default(0);
             $table->timestamps();

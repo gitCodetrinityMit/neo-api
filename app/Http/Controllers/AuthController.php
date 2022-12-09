@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use App\Models\Cart;
+use App\Models\Wishlist;
 
 class AuthController extends Controller
 {
@@ -66,6 +68,14 @@ class AuthController extends Controller
             ],401);
         }
 
+        // Profile Add
+        $profile_name = '';
+        $profile = $request->image;
+        if($request->file('image')){
+            $profile_name = 'profile/' .rand(10000000,99999999). "." .$profile->getClientOriginalExtension();
+            $profile->move(public_path('storage/profile'),$profile_name);
+        }
+
         // Create New User If Validation Success
         $user = new User();
         $user->user_name = $request->user_name;
@@ -75,6 +85,7 @@ class AuthController extends Controller
         $user->password = Hash::make($request->password);
         $user->user_type = $request->user_type;
         $user->remember_token = Str::random(25);
+        $user->profile = $profile_name;
         $user->save();
 
         $userdata = array(
@@ -124,10 +135,8 @@ class AuthController extends Controller
             ], 200);
         }else{
               $error = 'Your Email Or Password is Wrong!!';
-              return response()->json([
-                'error' => $error
-              ], 401);
-        }
+              return response()->json(['error' => $error], 401);
+        } 
     }
 
     /**
@@ -183,6 +192,12 @@ class AuthController extends Controller
         }
     }
 
+    public function logout()
+    {
+        Auth::logout();
+        return response()->json(['success' => 'Successfully Log Out'],200);
+    }
+
     /**
      * Remove User 
      *
@@ -196,6 +211,8 @@ class AuthController extends Controller
         $user = User::where('id',$id)->first();
 
         if($user){
+            Cart::where('user_id',$id)->delete();
+            Wishlist::where('user_id',$id)->delete();
             $user->delete();
             return response()->json(['success' => 'User Remove success'],200);
         }else{

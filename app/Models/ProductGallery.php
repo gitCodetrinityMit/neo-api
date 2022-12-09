@@ -23,15 +23,5 @@ class ProductGallery extends Model
         return $this->belongsTo(Product::class, 'id', 'product_id');
     }
 
-    public function wishlist()
-    {
-        return $this->hasMany(Wishlist::class);
-    }
-
-    public function cart()
-    {
-        return $this->hasMany(Cart::class,'product_id','id');
-    }
-
 
 }

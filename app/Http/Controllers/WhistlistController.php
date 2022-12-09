@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductGallery;
 use App\Models\Wishlist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +19,10 @@ class WhistlistController extends Controller
      */
     public function index() {
         if(Auth::check()){
-            $wishlist = Wishlist::with('products')->where('user_id','=',auth()->user()->id)->get();   
-            return response()->json(['success' => $wishlist],200); 
+            $user = auth()->user();
+            $wishlist = Wishlist::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id')->get();
+
+            return response()->json(['success' => $wishlist,'user' =>  $user],200); 
         }else{
             return response()->json(['error' => 'Login First!!!'],401);
         }

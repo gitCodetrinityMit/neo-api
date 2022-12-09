@@ -19,18 +19,23 @@ class checkApiToken
     public function handle(Request $request, Closure $next)
     {
         if(!empty(trim($request->input('api_token')))){
-            if(Auth::user())
+            // dd($request->input('api_token'));
+            if(auth()->user())
             {
-                $is_exists = User::where('id' , Auth::user()->id)->exists();
+                // dd('123');
+                $is_exists = User::where('id' , auth()->user()->id)->exists();
                 if($is_exists){
+                    // dd('456');
                     return $next($request);
                 }
             }
             else
             {
+                // dd('789');
                  return response()->json('You are not logged! Please Login or Register', 401);
             }
          }
+        //  dd('no');
          return response()->json('Invalid Token', 401);
     }
 }

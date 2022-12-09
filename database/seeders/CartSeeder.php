@@ -18,19 +18,23 @@ class CartSeeder extends Seeder
         $carts = [
             [
                 'user_id'   =>  1,
-                'product_id'    =>1,
+                'product_id'    => 1,
+                'product_qty'   =>  5,
             ],
             [
                 'user_id'   =>  1,
-                'product_id'   =>   2, 
+                'product_id'   =>   2,
+                'product_qty'   =>  5, 
             ],
             [
                 'user_id'   =>  2,
                 'product_id'    =>  3,
+                'product_qty'   =>  5,
             ],
             [
                 'user_id'   =>  2,
                 'product_id'    =>  4,
+                'product_qty'   =>  5,
             ]
         ];
         

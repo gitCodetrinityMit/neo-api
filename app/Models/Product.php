@@ -13,6 +13,7 @@ class Product extends Model
     use HasFactory;
     protected $table = 'products';
     protected $primarykey = 'id';
+    protected $fillabele = ['name','description'];
 
     public static function boot() {
         parent::boot();

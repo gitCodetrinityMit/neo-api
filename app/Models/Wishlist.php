@@ -6,10 +6,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\ProductGallery;
 
 class Wishlist extends Model
 {
     use HasFactory;
+    protected $fillable = ['product_id'];
 
     public function products() {
         return $this->belongsTo(Product::class,'product_id','id');
@@ -20,6 +22,6 @@ class Wishlist extends Model
     }
 
     public function product_galleries(){
-        return $this->belongsTo(ProductGallery::class,'product_id','id');
+        return $this->hasMany(ProductGallery::class,'product_id');
     }
 }

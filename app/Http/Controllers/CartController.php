@@ -12,8 +12,9 @@ class CartController extends Controller
     public function index()
     {
         if(Auth::check()){
-            $cart_list = Cart::with('products')->where('user_id','=',auth()->user()->id)->select('user_id','product_id')->get();
-            return response()->json(['success' => $cart_list],200);
+            $user = auth()->user();
+            $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id')->get();
+            return response()->json(['success' => $cart_list, 'user' => $user],200);
         }else{
             return response()->json(['error' => 'Login To Continue!!!'],401);
         }
@@ -43,6 +44,7 @@ class CartController extends Controller
                 $wishlist = new Cart();
                 $wishlist->user_id = auth()->user()->id;
                 $wishlist->product_id = $request->product_id;
+                $wishlist->product_qty = $request->product_qty;
                 $wishlist->save();
                 return response()->json(['success' => 'Product Add To Cart'], 200);
             }else{
