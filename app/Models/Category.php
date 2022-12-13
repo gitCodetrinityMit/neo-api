@@ -32,20 +32,6 @@ class Category extends Model
         return $categories;
     }
 
-    public static function boot() {
-        parent::boot();
-
-        self::deleting(function($category) {
-            $category->children()->each(function($children) {
-                $children->delete();
-            });
-
-            $category->product_category()->each(function($product_category) {
-                $product_category->delete();
-            });
-        });
-    }
-
     /**
     * Category related with Product table for Relation Beetween Category and Product.
     *

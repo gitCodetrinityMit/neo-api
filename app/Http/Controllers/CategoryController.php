@@ -133,14 +133,12 @@ class CategoryController extends Controller
      */
     public function deleteCategory($id)
     {
-        $category = Category::where('id',$id)->first();
-        
-        if($category){
-            Product::with('product_category')->where('id',$id)->delete();
-            $category->delete();
-            return response()->json(['success' => 'Category Deleted Success'],200);
-        }else{
-            return response()->json(['error' => 'Category Delete Error'],401);
-        }
+        $update_category_status = [
+            'category_id'   =>  1
+        ];
+        ProductCategory::where('category_id',$id)->update($update_category_status);
+    
+        Category::find($id)->delete();
+        return response()->json(['success' => 'Category Deleted Success'],200);  
     }
 }

@@ -16,9 +16,9 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categoryid = [1,2,3,4,5,6,7,8,9,10];
-        $category = ['Category 1','Category 2','Category 3','Category 4','Category 5','Sub Category 1','Sub Category 2','Sub Category 3','Sub Category 4','Sub Category 5'];
-        $categoryparentId = [0,0,0,0,0,1,2,3,4,5];
+        $categoryid = [1,2,3,4,5,6,7,8,9,10,11];
+        $category = ['Uncategorize Category','Category 1','Category 2','Category 3','Category 4','Category 5','Sub Category 1','Sub Category 2','Sub Category 3','Sub Category 4','Sub Category 5'];
+        $categoryparentId = [0,0,0,0,0,0,2,2,3,4,5];
 
         // Category Add Data In DataBase
         foreach ($category as $k => $cat) {
