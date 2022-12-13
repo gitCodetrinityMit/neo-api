@@ -14,7 +14,7 @@ class CartController extends Controller
     {
         if(Auth::check()){
             $user = auth()->user();
-            $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id')->get();
+            $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
             return response()->json(['success' => $cart_list, 'user' => $user],200);
         }else{
             return response()->json(['error' => 'Login To Continue!!!'],401);
