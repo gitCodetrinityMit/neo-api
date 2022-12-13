@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -37,18 +38,25 @@ class CartController extends Controller
         }
         
         if(Auth::check()){
-            
-            $wishlist = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
+        
+            $product = Product::find($request->product_id);
 
-            if (empty($wishlist)) {
-                $wishlist = new Cart();
-                $wishlist->user_id = auth()->user()->id;
-                $wishlist->product_id = $request->product_id;
-                $wishlist->product_qty = $request->product_qty;
-                $wishlist->save();
-                return response()->json(['success' => 'Product Add To Cart'], 200);
-            }else{
-                return response()->json(['errro' => 'Already In Cart'], 401);
+            if($product){
+                if($request->product_qty > $product->stock){
+                    return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
+                }else{
+                    $wishlist = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
+                    if (empty($wishlist)) {
+                        $wishlist = new Cart();
+                        $wishlist->user_id = auth()->user()->id;
+                        $wishlist->product_id = $request->product_id;
+                        $wishlist->product_qty = $request->product_qty;
+                        $wishlist->save();
+                        return response()->json(['success' => 'Product Add To Cart'], 200);
+                    }else{
+                        return response()->json(['errro' => 'Already In Cart'], 401);
+                    }
+                }
             }
         }else{
             return response()->json(['error' =>  'You Are Not LoggedIn!!!'],401);
@@ -76,6 +84,29 @@ class CartController extends Controller
             }
         }else{
             return response()->json(['error' => 'Login To Continue!!!'],401);
+        }
+    }
+
+    public function updateCartItem(Request $request)
+    {
+        $product = Cart::with('products')->where('user_id',auth()->user()->id)->where('product_id',$request->product_id)->first();
+
+       if($request->product_qty == 0){
+          return response()->json(['error' => 'Selectd Product Quantity Not Allowed!!!'],401); 
+       }
+
+        if($product){
+            if($request->product_qty > $product->products->stock){
+                return response()->json(['error' => 'Product Stock Not Available!!!'],401);
+            }else{
+                $cart_update = [
+                    'product_qty'    =>  $request->product_qty,
+                    'total'          =>  $product->products->regular_price * $request->product_qty,
+                    'subtotal'       =>  $product->products->regular_price * $request->product_qty
+                ];
+                Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
+                return response()->json(['success' => 'Cart Updated'],200);
+            }
         }
     }
 }

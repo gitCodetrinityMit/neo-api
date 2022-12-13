@@ -59,6 +59,7 @@ Route::group(['middleware'=>'auth:sanctum'], function() {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.list');
     Route::post('/add-cart', [CartController::class, 'addProductCart'])->name('add.cart');
     Route::post('/remove-cart-item', [CartController::class, 'removeCartProduct'])->name('remove.cart.item');
+    Route::post('/update-cart', [CartController::class, 'updateCartItem'])->name('cart.increment');
 });
 /*
 |--------------------------------------------------------------------------

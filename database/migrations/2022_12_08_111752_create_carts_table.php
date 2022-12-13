@@ -20,6 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
             $table->string('product_qty')->default(1);
+            $table->string('subtotal')->nullable();
+            $table->string('total')->nullable();
             $table->timestamps();
         });
     }
