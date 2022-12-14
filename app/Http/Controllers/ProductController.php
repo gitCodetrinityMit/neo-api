@@ -22,7 +22,7 @@ class ProductController extends Controller
     {
   
         // Product Listing
-        $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status','created_at')->orderBy('id','asc');
+        $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status','created_at')->orderBy('id','desc');
 
         $product = $product->with(['product_galleries' => function($q){
             $q->select('id','product_id','image');
