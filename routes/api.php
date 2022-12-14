@@ -4,6 +4,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\User\CategorysController;
+use App\Http\Controllers\User\ProductsController;
 use App\Http\Controllers\WhistlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,7 +30,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/signup-user', [AuthController::class, 'signupUser'])->name('user.signup');
 Route::post('/signin-user',[AuthController::class, 'signinUser'])->name('user.signin');
 Route::get('unauthorized', function () {
-    return response()->json(['error' => 'Access Denied!!!.'], 401);
+    return response()->json(['error' => 'Access Denied!!!'], 401);
 })->name('unauthorized');
 
 /*
@@ -38,6 +40,7 @@ Route::get('unauthorized', function () {
 */
 Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
 
+    // User Route
     Route::get('/user-list', [AuthController::class, 'userList'])->name('users');
     Route::get('/user-list/{id}', [AuthController::class, 'userGet'])->name('users.get');
     Route::post('/user-update', [AuthController::class, 'updateUser'])->name('user.update');
@@ -58,7 +61,20 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('/product/{id}', [ProductController::class, 'editProduct'])->name('product.edit');
     Route::delete('/product/{id}',[ProductController::class, 'deleteProduct'])->name('product.delete');
     Route::post('/product/{id}', [ProductController::class, 'updateProduct'])->name('product.update');
+});
 
+/*
+|--------------------------------------------------------------------------
+| Fronted Api
+|--------------------------------------------------------------------------
+*/
+// Product Listing Route
+Route::get('/product-list', [ProductsController::class, 'productList'])->name('product-list');
+
+// Category Listing Route
+Route::get('/category-list', [CategorysController::class, 'categoryList'])->name('category-list');
+
+Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     // Wishlist Route
     Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get');
     Route::post('/add-wishlist', [WhistlistController::class, 'addWishlistProduct'])->name('product.add-wishlist');
