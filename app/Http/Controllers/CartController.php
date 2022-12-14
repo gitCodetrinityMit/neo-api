@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class CartController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         if(Auth::check()){
             $user = auth()->user();
@@ -105,7 +105,10 @@ class CartController extends Controller
                     'subtotal'       =>  $product->products->regular_price * $request->product_qty
                 ];
                 Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
-                return response()->json(['success' => 'Cart Updated'],200);
+                
+                $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
+                
+                return response()->json(['success' => 'Cart Updated', 'cart' =>  $cart_list],200);
             }
         }
     }
