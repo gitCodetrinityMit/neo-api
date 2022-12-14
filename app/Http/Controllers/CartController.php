@@ -16,8 +16,6 @@ class CartController extends Controller
             $user = auth()->user();
             $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
             return response()->json(['success' => $cart_list, 'user' => $user],200);
-        }else{
-            return response()->json(['error' => 'Login To Continue!!!'],401);
         }
     }
 
@@ -45,21 +43,19 @@ class CartController extends Controller
                 if($request->product_qty > $product->stock){
                     return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
                 }else{
-                    $wishlist = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
-                    if (empty($wishlist)) {
-                        $wishlist = new Cart();
-                        $wishlist->user_id = auth()->user()->id;
-                        $wishlist->product_id = $request->product_id;
-                        $wishlist->product_qty = $request->product_qty;
-                        $wishlist->save();
+                    $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
+                    if (!$cart) {
+                        $cart = new Cart();
+                        $cart->user_id = auth()->user()->id;
+                        $cart->product_id = $request->product_id;
+                        $cart->product_qty = $request->product_qty;
+                        $cart->save();
                         return response()->json(['success' => 'Product Add To Cart'], 200);
                     }else{
                         return response()->json(['errro' => 'Already In Cart'], 401);
                     }
                 }
             }
-        }else{
-            return response()->json(['error' =>  'You Are Not LoggedIn!!!'],401);
         }
     }
 
@@ -82,8 +78,6 @@ class CartController extends Controller
             }else{
                 return response()->json(['error' => 'Product Id Error!!!'],401);
             }
-        }else{
-            return response()->json(['error' => 'Login To Continue!!!'],401);
         }
     }
 

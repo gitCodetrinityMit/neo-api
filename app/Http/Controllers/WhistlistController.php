@@ -23,8 +23,6 @@ class WhistlistController extends Controller
             $wishlist = Wishlist::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id')->get();
 
             return response()->json(['success' => $wishlist,'user' =>  $user],200); 
-        }else{
-            return response()->json(['error' => 'Login First!!!'],401);
         }
     }
 
@@ -48,7 +46,7 @@ class WhistlistController extends Controller
             
             $wishlist = Wishlist::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
 
-            if (empty($wishlist)) {
+            if (!$wishlist) {
                 $wishlist = new Wishlist();
                 $wishlist->user_id = auth()->user()->id;
                 $wishlist->product_id = $request->product_id;
@@ -57,8 +55,6 @@ class WhistlistController extends Controller
             }else{
                 return response()->json(['errro' => 'Already In Wishlist'], 401);
             }
-        }else{
-            return response()->json(['error' =>  'You Are Not LoggedIn!!!'],401);
         }
     }
 
@@ -81,9 +77,6 @@ class WhistlistController extends Controller
             }else{
                 return response()->json(['error' => 'Product Id Error!!!'],401);
             }
-        }else{
-            return response()->json(['error' => 'Login To Continue!!!'],401);
-        }
-        
+        }  
     }
 }
