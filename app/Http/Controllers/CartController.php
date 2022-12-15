@@ -41,15 +41,17 @@ class CartController extends Controller
             if($product){ 
                 
                 if($request->product_qty > $product->products->stock){
+                    // dd(123);
                     return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
                 }else{
-                    $cart_update = [
-                        'product_qty'    =>  $product->product_qty + ($request->product_qty),
-                        'total'          =>  $product->products->regular_price * $request->product_qty,
-                        'subtotal'       =>  $product->products->regular_price * $request->product_qty
-                    ];
-                    Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
-                    return response()->json(['success' => 'Product Cart Quantity Update'],200);
+                        // dd(456);
+                        $cart_update = [
+                            'product_qty'    =>  $product->product_qty + ($request->product_qty),
+                            'total'          =>  $product->products->regular_price * $request->product_qty,
+                            'subtotal'       =>  $product->products->regular_price * $request->product_qty
+                        ];
+                        Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
+                        return response()->json(['success' => 'Product Cart Quantity Update'],200);
                 }
             }else{
                 $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists(); 
@@ -100,12 +102,14 @@ class CartController extends Controller
         $product = Cart::with('products')->where('user_id',auth()->user()->id)->where('product_id',$request->product_id)->first();
 
        if($request->product_qty == 0){
-          return response()->json(['error' => 'Selectd Product Quantity Not Allowed!!!'],401); 
+        $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
+          return response()->json(['error' => 'Selectd Product Quantity Not Allowed!!!','cart' =>  $cart_list],401); 
        }
 
         if($product){
             if($request->product_qty > $product->products->stock){
-                return response()->json(['error' => 'Product Stock Not Available!!!'],401);
+                $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
+                return response()->json(['error' => 'Product Stock Not Available!!!', 'cart' =>  $cart_list],401);
             }else{
                 $cart_update = [
                     'product_qty'    =>  $request->product_qty,
