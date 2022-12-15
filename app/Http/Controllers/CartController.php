@@ -37,13 +37,30 @@ class CartController extends Controller
         
         if(Auth::check()){
         
-            $product = Product::find($request->product_id);
-
-            if($product){
-                if($request->product_qty > $product->stock){
+            $product = Cart::with('products')->where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->first();
+            
+            if($product){ 
+                
+                if($request->product_qty > $product->products->stock){
                     return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
                 }else{
-                    $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists();
+                    $cart_update = [
+                        'product_qty'    =>  $request->product_qty,
+                        'total'          =>  $product->products->regular_price * $request->product_qty,
+                        'subtotal'       =>  $product->products->regular_price * $request->product_qty
+                    ];
+                    Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
+                    return response()->json(['success' => 'Product Cart Quantity Update'],200);
+                }
+            }else{
+                $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists(); 
+                $product = Product::find($request->product_id);
+                
+                if($request->product_qty == 0){
+                    return response()->json(['error' => 'Selected Product Quantity Not Allowed!!!'],401); 
+                }else if($request->product_qty > $product->stock){
+                    return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
+                }else{
                     if (!$cart) {
                         $cart = new Cart();
                         $cart->user_id = auth()->user()->id;
@@ -51,8 +68,6 @@ class CartController extends Controller
                         $cart->product_qty = $request->product_qty;
                         $cart->save();
                         return response()->json(['success' => 'Product Add To Cart'], 200);
-                    }else{
-                        return response()->json(['errro' => 'Already In Cart'], 401);
                     }
                 }
             }
