@@ -38,13 +38,17 @@ class CartController extends Controller
         if(Auth::check()){
         
             $product = Cart::with('products')->where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->first();
+
             if($product){ 
                 
                 if($request->product_qty > $product->products->stock){
-                    // dd(123);
                     return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
-                }else{
-                        // dd(456);
+                }else{   
+                    $cart = Cart::with('products')->where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->first();
+                    $product_qty_check = $cart->product_qty + ($request->product_qty);
+                    if($product_qty_check > $cart->products->stock){
+                        return response()->json(['error' => 'Product Quantity Error!!!'],401);
+                    }else{
                         $cart_update = [
                             'product_qty'    =>  $product->product_qty + ($request->product_qty),
                             'total'          =>  $product->products->regular_price * $request->product_qty,
@@ -52,6 +56,7 @@ class CartController extends Controller
                         ];
                         Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
                         return response()->json(['success' => 'Product Cart Quantity Update'],200);
+                    }
                 }
             }else{
                 $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists(); 
