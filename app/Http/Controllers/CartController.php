@@ -38,14 +38,13 @@ class CartController extends Controller
         if(Auth::check()){
         
             $product = Cart::with('products')->where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->first();
-            
             if($product){ 
                 
                 if($request->product_qty > $product->products->stock){
                     return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
                 }else{
                     $cart_update = [
-                        'product_qty'    =>  $request->product_qty,
+                        'product_qty'    =>  $product->product_qty + ($request->product_qty),
                         'total'          =>  $product->products->regular_price * $request->product_qty,
                         'subtotal'       =>  $product->products->regular_price * $request->product_qty
                     ];
