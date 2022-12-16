@@ -94,4 +94,6 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
 
     //Order 
     Route::post('/create-order', [OrdersController::class, 'createOrder'])->name('order.cerate');
+    Route::get('/order-list', [OrdersController::class, 'orderList'])->name('orders.list');
+    Route::get('/single-order-show/{id}', [OrdersController::class, 'singleOrderShow'])->name('single.order.list');
 });
