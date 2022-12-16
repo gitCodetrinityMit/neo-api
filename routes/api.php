@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\User\CategorysController;
 use App\Http\Controllers\User\ProductsController;
+use App\Http\Controllers\User\OrdersController;
 use App\Http\Controllers\WhistlistController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
@@ -64,7 +65,6 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::post('/product/{id}', [ProductController::class, 'updateProduct'])->name('product.update');
 
     //Order Route
-    Route::post('/create-order', [OrderController::class, 'createOrder'])->name('order.cerate');
     Route::get('/order', [OrderController::class, 'listOrder'])->name('order.list');
     Route::get('/single-order/{id}', [OrderController::class, 'singleOrder'])->name('single.order.list');
 });
@@ -91,4 +91,7 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::post('/add-cart', [CartController::class, 'addProductCart'])->name('add.cart');
     Route::post('/remove-cart-item', [CartController::class, 'removeCartProduct'])->name('remove.cart.item');
     Route::post('/update-cart', [CartController::class, 'updateCartItem'])->name('cart.increment');
+
+    //Order 
+    Route::post('/create-order', [OrdersController::class, 'createOrder'])->name('order.cerate');
 });
