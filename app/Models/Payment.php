@@ -4,13 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Product;
-use App\Models\User;
 
-class Order extends Model
+class Payment extends Model
 {
     use HasFactory;
-    protected $table = 'orders';
+    protected $table = 'payments';
     protected $primarykey = 'id';
     protected $fillable = ['product_id','user_id'];
 
