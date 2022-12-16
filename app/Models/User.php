@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Wishlist;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Order;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -56,5 +57,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function cart()
     {
         return $this->hasMany(Cart::class,'user_id','id');
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 }

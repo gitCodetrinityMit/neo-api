@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use Illuminate\Support\Facades\File;
 use App\Models\Wishlist;
+use App\Models\Order;
 
 class Product extends Model
 {
@@ -69,5 +70,10 @@ class Product extends Model
     public function cart()
     {
         return $this->hasMany(Cart::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
     }
 }
