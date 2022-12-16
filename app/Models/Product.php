@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use Illuminate\Support\Facades\File;
 use App\Models\Wishlist;
-use App\Models\Order;
+use App\Models\OrderProducts;
 
 class Product extends Model
 {
@@ -72,13 +72,16 @@ class Product extends Model
         return $this->hasMany(Cart::class);
     }
 
-    public function order()
-    {
-        return $this->hasMany(Order::class);
-    }
+    // public function order()
+    // {
+    //     return $this->hasMany(Order::class);
+    // }
 
     public function payment()
     {
         return $this->hasMany(Payment::class);
+    }
+    public function orderProduct(){
+        return $this->hasMany(OrderProducts::class, 'product_id','id');
     }
 }

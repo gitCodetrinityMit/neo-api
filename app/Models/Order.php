@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\OrderProducts;
 
 class Order extends Model
 {
@@ -14,13 +15,17 @@ class Order extends Model
     protected $primarykey = 'id';
     protected $fillable = ['product_id','user_id'];
 
-    public function products()
-    {
-        return $this->belongsTo(Product::class);
-    }
+    // public function products()
+    // {
+    //     return $this->belongsTo(Product::class);
+    // }
 
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function orderProduct(){
+        return $this->hasMany(OrderProducts::class, 'order_id','id');
     }
 }

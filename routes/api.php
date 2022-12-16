@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\User\CategorysController;
 use App\Http\Controllers\User\ProductsController;
 use App\Http\Controllers\WhistlistController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -61,6 +62,11 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('/product/{id}', [ProductController::class, 'editProduct'])->name('product.edit');
     Route::delete('/product/{id}',[ProductController::class, 'deleteProduct'])->name('product.delete');
     Route::post('/product/{id}', [ProductController::class, 'updateProduct'])->name('product.update');
+
+    //Order Route
+    Route::post('/create-order', [OrderController::class, 'createOrder'])->name('order.cerate');
+    Route::get('/order', [OrderController::class, 'listOrder'])->name('order.list');
+    Route::get('/single-order/{id}', [OrderController::class, 'singleOrder'])->name('single.order.list');
 });
 
 /*
