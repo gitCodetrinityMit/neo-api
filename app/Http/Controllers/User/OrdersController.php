@@ -19,8 +19,6 @@ class OrdersController extends Controller
 
             $order = new Order;
             $order->user_id = auth()->user()->id;
-            $order->price = $request->price;
-            $order->quantity = $request->quantity;
             $order->shipping_price = $request->shipping_price;
             $order->payment_status = $request->payment_status;
             $order->order_status = $request->order_status;
@@ -43,7 +41,7 @@ class OrdersController extends Controller
     public function orderList(Request $request){
 
         if(Auth::check()){
-            $orders = Order::select('id','price','quantity','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->orderBy('id','DESC');
+            $orders = Order::select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->orderBy('id','DESC');
 
             $orders = $orders->with(['OrderProduct' => function($q){
                 $q->with(['products' => function($q){
@@ -61,7 +59,7 @@ class OrdersController extends Controller
     public function singleOrderShow(Request $request,$id){
 
         if(Auth::check()){
-            $orders = Order::select('id','price','quantity','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->where('id',$id)->orderBy('id','DESC');
+            $orders = Order::select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->where('id',$id)->orderBy('id','DESC');
 
             $orders = $orders->with(['OrderProduct' => function($q){
                 $q->with(['products' => function($q){
