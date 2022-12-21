@@ -14,8 +14,7 @@ class OrdersController extends Controller
 {
        
     public function createOrder(Request $request){
-         /*$product = $request->product_id;
-         $product = explode(',',$product);*/
+
         if(Auth::check()){
             $products = json_decode($request->product_data);
             if(!$products){
@@ -48,7 +47,6 @@ class OrdersController extends Controller
                     $order_pro->product_total_price = $product_total_price;
                     $order_pro->save();
                 }
-                Cart::where('user_id',auth()->user()->id)->delete();
                 return response()->json(['success' => 'Order Created Successfully','order_id' => $order->id],200);     
             }
         }
@@ -57,7 +55,7 @@ class OrdersController extends Controller
     public function orderList(Request $request){
 
         if(Auth::check()){
-            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
+            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','user_id','total_price','created_at','updated_at')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
 
             // $orders = $orders->with(['OrderProduct' => function($q){
             //     $q->with(['products' => function($q){
@@ -75,7 +73,7 @@ class OrdersController extends Controller
     public function singleOrderShow(Request $request,$id){
 
         if(Auth::check()){
-            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->where('user_id',auth()->user()->id)->where('id',$id)->orderBy('id','DESC');
+            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','status','payment_method','total_price','shippping_address','total_price','created_at','updated_at')->where('user_id',auth()->user()->id)->where('id',$id)->orderBy('id','DESC');
 
             // $orders = $orders->with(['OrderProduct' => function($q){
             //     $q->with(['products' => function($q){
@@ -100,6 +98,11 @@ class OrdersController extends Controller
      */
     public function updateOrderStatus($id) 
     {
-       return $order_product_id = OrderProducts::with('order')->where('order_id',$id)->get();
+        $order_id = Order::where('id',$id)->get();
+        if(!$order_id){
+            return response()->json(['error' => 'Invalid Order Id Found!!!'],401);
+        }else{
+            return "Order Status Update Here";
+        }
     }
 }

@@ -46,7 +46,7 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::get('/user-list', [AuthController::class, 'userList'])->name('users');
     Route::get('/user-list/{id}', [AuthController::class, 'userGet'])->name('users.get');
     Route::post('/user-update', [AuthController::class, 'updateUser'])->name('user.update');
-    Route::post('/remove-user/{id}', [AuthController::class, 'removeUser'])->name('user.remove');
+    Route::delete('/remove-user/{id}', [AuthController::class, 'removeUser'])->name('user.remove');
     Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name('user.forgotpassword');
     Route::post('/logout', [AuthController::class, 'logout'])->name('user.logout');
 
