@@ -13,7 +13,7 @@ class Order extends Model
     use HasFactory;
     protected $table = 'orders';
     protected $primarykey = 'id';
-    protected $fillable = ['product_id','user_id'];
+    protected $guarded = ['id'];
 
     // public function products()
     // {

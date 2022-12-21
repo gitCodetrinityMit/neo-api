@@ -14,7 +14,7 @@ class CartController extends Controller
     {
         if(Auth::check()){
             $user = auth()->user();
-            $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
+            $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty','total','subtotal')->get();
             return response()->json(['success' => $cart_list, 'user' => $user],200);
         }
     }
@@ -61,17 +61,19 @@ class CartController extends Controller
             }else{
                 $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists(); 
                 $product = Product::find($request->product_id);
-                
+
                 if($request->product_qty == 0){
                     return response()->json(['error' => 'Selected Product Quantity Not Allowed!!!'],401); 
                 }else if($request->product_qty > $product->stock){
                     return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
                 }else{
-                    if (!$cart) {
+                    if (!$cart) { 
                         $cart = new Cart();
                         $cart->user_id = auth()->user()->id;
                         $cart->product_id = $request->product_id;
                         $cart->product_qty = $request->product_qty;
+                        $cart->subtotal = $product->regular_price * $request->product_qty;
+                        $cart->total = $product->regular_price * $request->product_qty;
                         $cart->save();
                         return response()->json(['success' => 'Product Add To Cart'], 200);
                     }

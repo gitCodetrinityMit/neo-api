@@ -9,7 +9,7 @@ use App\Models\ProductGallery;
 class Cart extends Model
 {
     use HasFactory;
-    protected $fillable = ['product_id'];
+    protected $guarded = ['id'];
 
     public function products() {
         return $this->belongsTo(Product::class,'product_id','id');
@@ -21,5 +21,9 @@ class Cart extends Model
 
     public function product_galleries(){
         return $this->hasMany(ProductGallery::class,'product_id');
+    }
+
+    public function cart_item() {
+        return $this->hasMany(CartItem::class);
     }
 }
