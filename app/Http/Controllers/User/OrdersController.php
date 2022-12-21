@@ -57,7 +57,7 @@ class OrdersController extends Controller
     public function orderList(Request $request){
 
         if(Auth::check()){
-            $orders = Order::with('OrderProduct.products')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->orderBy('id','DESC');
+            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
 
             // $orders = $orders->with(['OrderProduct' => function($q){
             //     $q->with(['products' => function($q){
@@ -75,7 +75,7 @@ class OrdersController extends Controller
     public function singleOrderShow(Request $request,$id){
 
         if(Auth::check()){
-            $orders = Order::with('OrderProduct.products')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->where('id',$id)->orderBy('id','DESC');
+            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address')->where('user_id',auth()->user()->id)->where('id',$id)->orderBy('id','DESC');
 
             // $orders = $orders->with(['OrderProduct' => function($q){
             //     $q->with(['products' => function($q){
@@ -100,6 +100,6 @@ class OrdersController extends Controller
      */
     public function updateOrderStatus($id) 
     {
-        
+       return $order_product_id = OrderProducts::with('order')->where('order_id',$id)->get();
     }
 }
