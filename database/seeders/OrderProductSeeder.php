@@ -22,6 +22,7 @@ class OrderProductSeeder extends Seeder
                 'shipping_price' => 2500,
                 'payment_status' => 1,
                 'order_status' => 1,
+                'order_number' => '#100001',
                 'total_price' => 1000,
                 'payment_method' => 'COD',
                 'shippping_address' => 'User Address'  
