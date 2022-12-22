@@ -84,37 +84,17 @@ class OrdersController extends Controller
      * @return Message (error or success)
      * 
      */
-    public function updateOrderStatus(Request $request,$id) 
+    public function cancelledOrder(Request $request,$id) 
     {
         $order_id = Order::where('id',$id)->select('payment_status','order_status')->first();
-
+        $order_status = $request->order_status;
         if(!$order_id){
-            return response()->json(['success' => 'Order Id Error!!!'],401);
+            return response()->json(['error' => 'Order Id Error!!!'],401);
         }else{
-            $order_status = $request->order_status;
-           if($order_status == 2){
-               $update_order_status = [
-                   'order_status'  =>  2,
-                   'updated_at'    =>  date('Y-m-d H:i:s')
-               ];
-           }else if($order_status == 1){
-                $update_order_status = [
-                    'order_status'  =>  1,
-                    'updated_at'    =>  date('Y-m-d H:i:s')
-                ];
-           }else if($order_status == 0){
-                $update_order_status = [
-                    'order_status'  =>  0,
-                    'updated_at'    =>  date('Y-m-d H:i:s')
-                ];
-           }else if($order_status == 3){
-                $update_order_status = [
-                    'order_status'  =>  3,
-                    'updated_at'    =>  date('Y-m-d H:i:s')
-                ];
-        }
-        Order::where('id',$id)->update($update_order_status);
-        return response()->json(['orderStatus' => 'Order Status Updated'],200);
+            if($order_status != 0){
+                Order::where('id',$id)->update(['order_status' => 0]);
+                return response()->json(['orderStatus' => 'Order Cancelled!!!'],200);
+            }
         }
     }
 }
