@@ -43,26 +43,32 @@ Route::get('unauthorized', function () {
 Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
 
     // User Route
-    Route::get('/user-list', [AuthController::class, 'userList'])->name('users');
-    Route::get('/user-list/{id}', [AuthController::class, 'userGet'])->name('users.get');
-    Route::post('/user-update', [AuthController::class, 'updateUser'])->name('user.update');
-    Route::delete('/remove-user/{id}', [AuthController::class, 'removeUser'])->name('user.remove');
-    Route::post('/forgot-password',[AuthController::class, 'forgotPassword'])->name('user.forgotpassword');
-    Route::post('/logout', [AuthController::class, 'logout'])->name('user.logout');
+    Route::controller(AuthController::class)->group(function(){
+        Route::get('/user-list', 'userList')->name('users');
+        Route::get('/user-list/{id}', 'userGet')->name('users.get');
+        Route::post('/user-update', 'updateUser')->name('user.update');
+        Route::delete('/remove-user/{id}', 'removeUser')->name('user.remove');
+        Route::post('/forgot-password','forgotPassword')->name('user.forgotpassword');
+        Route::post('/logout', 'logout')->name('user.logout');
+    });
 
     // Category Route
-    Route::get('/category', [CategoryController::class, 'listCategory'])->name('category.list');
-    Route::post('/category', [CategoryController::class,'addCategory'])->name('category.add');
-    Route::get('/category/{id}', [CategoryController::class, 'editCategory'])->name('category.edit');
-    Route::post('/category/{id}', [CategoryController::class, 'updateCategory'])->name('category.update');
-    Route::delete('/category/{id}', [CategoryController::class, 'deleteCategory'])->name('category.delete');
-
+    Route::controller(CategoryController::class)->group(function(){
+        Route::get('/category','listCategory')->name('category.list');
+        Route::post('/category','addCategory')->name('category.add');
+        Route::get('/category/{id}','editCategory')->name('category.edit');
+        Route::post('/category/{id}', 'updateCategory')->name('category.update');
+        Route::delete('/category/{id}','deleteCategory')->name('category.delete');
+    });
+ 
     // Product Route
-    Route::get('/product', [ProductController::class, 'listProduct'])->name('product.list');
-    Route::post('/product', [ProductController::class, 'addProduct'])->name('product.add');
-    Route::get('/product/{id}', [ProductController::class, 'editProduct'])->name('product.edit');
-    Route::delete('/product/{id}',[ProductController::class, 'deleteProduct'])->name('product.delete');
-    Route::post('/product/{id}', [ProductController::class, 'updateProduct'])->name('product.update');
+    Route::controller(ProductController::class)->group(function(){
+        Route::get('/product', 'listProduct')->name('product.list');
+        Route::post('/product', 'addProduct')->name('product.add');
+        Route::get('/product/{id}', 'editProduct')->name('product.edit');
+        Route::delete('/product/{id}','deleteProduct')->name('product.delete');
+        Route::post('/product/{id}','updateProduct')->name('product.update');
+    });
 
     //Order Route
     Route::controller(OrderController::class)->group(function(){
@@ -85,19 +91,25 @@ Route::get('/category-list', [CategorysController::class, 'categoryList'])->name
 
 Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     // Wishlist Route
-    Route::get('/wishlist', [WhistlistController::class, 'index'])->name('wishlist.get');
-    Route::post('/add-wishlist', [WhistlistController::class, 'addWishlistProduct'])->name('product.add-wishlist');
-    Route::post('/remove-wishlist', [WhistlistController::class, 'removeWishlistProduct'])->name('product.remove-wishlist');
+    Route::controller(WhistlistController::class)->group(function() {
+        Route::get('/wishlist','index')->name('wishlist.get');
+        Route::post('/add-wishlist', 'addWishlistProduct')->name('product.add-wishlist');
+        Route::post('/remove-wishlist', 'removeWishlistProduct')->name('product.remove-wishlist');
+    });
 
     // Add To Cart Route
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.list');
-    Route::post('/add-cart', [CartController::class, 'addProductCart'])->name('add.cart');
-    Route::post('/remove-cart-item', [CartController::class, 'removeCartProduct'])->name('remove.cart.item');
-    Route::post('/update-cart', [CartController::class, 'updateCartItem'])->name('cart.increment');
+    Route::controller(CartController::class)->group(function() {
+        Route::get('/cart','index')->name('cart.list');
+        Route::post('/add-cart', 'addProductCart')->name('add.cart');
+        Route::post('/remove-cart-item', 'removeCartProduct')->name('remove.cart.item');
+        Route::post('/update-cart','updateCartItem')->name('cart.increment');
+    });
 
     //Order 
-    Route::post('/create-order', [OrdersController::class, 'createOrder'])->name('order.cerate');
-    Route::get('/order-list', [OrdersController::class, 'orderList'])->name('orders.list');
-    Route::get('/single-order-show/{id}', [OrdersController::class, 'singleOrderShow'])->name('single.order.list');
-    Route::post('/order-cancelled/{id}',[OrdersController::class, 'cancelledOrder'])->name('order.cancelled');
+    Route::controller(OrdersController::class)->group(function() {
+        Route::post('/create-order', 'createOrder')->name('order.cerate');
+        Route::get('/order-list', 'orderList')->name('orders.list');
+        Route::get('/single-order-show/{id}','singleOrderShow')->name('single.order.list');
+        Route::post('/order-cancelled/{id}','cancelledOrder')->name('order.cancelled');
+    });
 });
