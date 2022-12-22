@@ -111,4 +111,25 @@ class OrdersController extends Controller
             }
         }
     }
+
+    public function updateStatus(Request $request,$id) 
+    {
+        $order_id = Order::with('orderProduct.products.product_galleries')->where('id',$id)->select('id','payment_status','order_status','shippping_address','order_number')->first();
+
+        if(!$order_id){
+            return response()->json(['success' => 'Order Id Error!!!'],401);
+        }else{
+            $order_status = $request->order_status;
+            $payment_status = $request->payment_status;
+            
+            if($order_status == 1 && $payment_status == 1){
+                Cart::where('user_id',auth()->user()->id)->delete();
+            }
+           
+            Order::where('id',$id)->update(['order_status' => $order_status]);
+            Order::where('id',$id)->update(['payment_status'  => $payment_status]);
+            Payment::where('order_id',$id)->update(['payment_status'  => $payment_status]);
+            return response()->json(['orderStatus' => 'Order Updated','orderDetail'  => $order_id],200);
+        }
+    }
 }

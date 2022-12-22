@@ -112,6 +112,7 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::get('/order-list', 'orderList')->name('orders.list');
         Route::get('/single-order-show/{id}','singleOrderShow')->name('single.order.list');
         Route::post('/order-cancelled/{id}','cancelledOrder')->name('order.cancelled');
+        Route::post('/update-status/{id}','updateStatus')->name('status.update');
     });
 
     Route::controller(ProfileController::class)->group(function(){
