@@ -57,12 +57,6 @@ class OrdersController extends Controller
         if(Auth::check()){
             $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','user_id','total_price','created_at','updated_at')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
 
-            // $orders = $orders->with(['OrderProduct' => function($q){
-            //     $q->with(['products' => function($q){
-            //         $q->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status');
-            //     }])->select('id','order_id','product_id');
-            // }]);
-
             $paginate = $request->show ? $request->show : 10;
             $orders = $orders->latest()->paginate($paginate);
             
@@ -74,12 +68,6 @@ class OrdersController extends Controller
 
         if(Auth::check()){
             $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','status','payment_method','total_price','shippping_address','total_price','created_at','updated_at')->where('user_id',auth()->user()->id)->where('id',$id)->orderBy('id','DESC');
-
-            // $orders = $orders->with(['OrderProduct' => function($q){
-            //     $q->with(['products' => function($q){
-            //         $q->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status');
-            //     }])->select('id','order_id','product_id');
-            // }]);
 
             $paginate = $request->show ? $request->show : 10;
             $orders = $orders->paginate($paginate);
@@ -96,13 +84,37 @@ class OrdersController extends Controller
      * @return Message (error or success)
      * 
      */
-    public function updateOrderStatus($id) 
+    public function updateOrderStatus(Request $request,$id) 
     {
-        $order_id = Order::where('id',$id)->get();
+        $order_id = Order::where('id',$id)->select('payment_status','order_status')->first();
+
         if(!$order_id){
-            return response()->json(['error' => 'Invalid Order Id Found!!!'],401);
+            return response()->json(['success' => 'Order Id Error!!!'],401);
         }else{
-            return "Order Status Update Here";
+            $order_status = $request->order_status;
+           if($order_status == 2){
+               $update_order_status = [
+                   'order_status'  =>  2,
+                   'updated_at'    =>  date('Y-m-d H:i:s')
+               ];
+           }else if($order_status == 1){
+                $update_order_status = [
+                    'order_status'  =>  1,
+                    'updated_at'    =>  date('Y-m-d H:i:s')
+                ];
+           }else if($order_status == 0){
+                $update_order_status = [
+                    'order_status'  =>  0,
+                    'updated_at'    =>  date('Y-m-d H:i:s')
+                ];
+           }else if($order_status == 3){
+                $update_order_status = [
+                    'order_status'  =>  3,
+                    'updated_at'    =>  date('Y-m-d H:i:s')
+                ];
+        }
+        Order::where('id',$id)->update($update_order_status);
+        return response()->json(['orderStatus' => 'Order Status Updated'],200);
         }
     }
 }

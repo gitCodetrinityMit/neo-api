@@ -65,8 +65,11 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::post('/product/{id}', [ProductController::class, 'updateProduct'])->name('product.update');
 
     //Order Route
-    Route::get('/order', [OrderController::class, 'listOrder'])->name('order.list');
-    Route::get('/single-order/{id}', [OrderController::class, 'singleOrder'])->name('single.order.list');
+    Route::controller(OrderController::class)->group(function(){
+        Route::get('/order', 'listOrder')->name('order.list');
+        Route::get('/single-order/{id}', 'singleOrder')->name('single.order.list');
+        Route::post('/update-order-status/{id}','updateOrderStatus')->name('order-status.update');
+    });
 });
 
 /*
@@ -96,5 +99,5 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     Route::post('/create-order', [OrdersController::class, 'createOrder'])->name('order.cerate');
     Route::get('/order-list', [OrdersController::class, 'orderList'])->name('orders.list');
     Route::get('/single-order-show/{id}', [OrdersController::class, 'singleOrderShow'])->name('single.order.list');
-    Route::post('/update-order-status/{id}',[OrdersController::class, 'updateOrderStatus'])->name('order-status.update');
+    Route::post('/order-status/{id}',[OrdersController::class, 'updateOrderStatus'])->name('order-status.update');
 });

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->string('shipping_price');
             $table->string('payment_status');
-            $table->string('order_status');
+            $table->string('order_status')->default(2); //processing
             $table->string('payment_method');
             $table->string('total_price');
             $table->text('shippping_address');
