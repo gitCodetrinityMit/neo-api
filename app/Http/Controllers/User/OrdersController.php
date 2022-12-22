@@ -24,7 +24,7 @@ class OrdersController extends Controller
                 $order->user_id = auth()->user()->id;
                 $order->shipping_price = $request->shipping_price;
                 $order->payment_status = $request->payment_status;
-                $order->order_status = $request->order_status;
+                // $order->order_status = $request->order_status;
                 $order->payment_method = $request->payment_method;
                 $order->total_price = $request->total_price;
                 $order->shippping_address = $request->shippping_address;
