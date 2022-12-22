@@ -59,6 +59,10 @@ class OrdersController extends Controller
                     $payment->payment_status = $request->payment_status;
                     $payment->save();
                 }
+                $cod_check = $request->cash_on_delivery_check;
+                if($cod_check == 'COD'){
+                    Cart::where('user_id',auth()->user()->id)->delete(); 
+                }
 
                 Order::where('id',$order->id)->update(['order_number' => '#10000'.$order->id]);
                 return response()->json(['success' => 'Order Created Successfully','order_id' => $order->id],200);     
@@ -124,10 +128,6 @@ class OrdersController extends Controller
             
             if($order_status == 1 && $payment_status == 1){
                 Cart::where('user_id',auth()->user()->id)->delete();
-            }
-
-            if($order_id->payment_method == 'COD'){
-                $order_status = 2; // payment type cod then changed only order status
             }
            
             Order::where('id',$id)->update(['order_status' => $order_status,'payment_status' => $payment_status]);
