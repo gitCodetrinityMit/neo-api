@@ -9,6 +9,7 @@ use App\Http\Controllers\User\ProductsController;
 use App\Http\Controllers\User\OrdersController;
 use App\Http\Controllers\WhistlistController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\User\ProfileController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -111,5 +112,10 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::get('/order-list', 'orderList')->name('orders.list');
         Route::get('/single-order-show/{id}','singleOrderShow')->name('single.order.list');
         Route::post('/order-cancelled/{id}','cancelledOrder')->name('order.cancelled');
+    });
+
+    Route::controller(ProfileController::class)->group(function(){
+        Route::get('/user-detail', 'userDetail')->name('user.profile.list');
+        Route::post('/user-profile-update', 'updateUserProfile')->name('profile.update');
     });
 });

@@ -9,6 +9,7 @@ use App\Models\OrderProducts;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Cart;
+use App\Models\Payment;
 
 class OrdersController extends Controller
 {
@@ -46,7 +47,20 @@ class OrdersController extends Controller
                     $order_pro->unit_price = $thisProduct->qty * $product_list->selling_price;
                     $order_pro->product_total_price = $product_total_price;
                     $order_pro->save();
+
+                    $payment = new Payment();
+                    $payment->payment_method = $request->payment_method;
+                    $payment->user_id = auth()->user()->id;
+                    $payment->order_id = $order->id;
+                    $payment->product_id = $thisProduct->id;
+                    $payment->amount = $thisProduct->qty * $product_list->selling_price;
+                    $payment->payment_amount = $product_total_price;
+                    $payment->payer_email = auth()->user()->email;
+                    $payment->payment_status = $request->payment_status;
+                    $payment->save();
                 }
+
+                Order::where('id',$order->id)->update(['order_number' => '#10000'.$order->id]);
                 return response()->json(['success' => 'Order Created Successfully','order_id' => $order->id],200);     
             }
         }

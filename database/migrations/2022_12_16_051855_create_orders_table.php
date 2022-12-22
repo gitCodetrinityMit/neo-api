@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->string('order_number')->nullable();
             $table->string('shipping_price');
             $table->string('payment_status');
             $table->string('order_status')->default(2); //processing
