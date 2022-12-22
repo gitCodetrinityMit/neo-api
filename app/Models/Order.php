@@ -28,4 +28,9 @@ class Order extends Model
     public function orderProduct(){
         return $this->hasMany(OrderProducts::class, 'order_id','id');
     }
+
+    public function payment()
+    {
+        return $this->belongsTo(Payment::class);
+    }
 }

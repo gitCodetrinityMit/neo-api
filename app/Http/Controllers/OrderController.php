@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
+use App\Models\Payment;
 
 class OrderController extends Controller
 {
@@ -49,29 +50,11 @@ class OrderController extends Controller
             return response()->json(['success' => 'Order Id Error!!!'],401);
         }else{
             $order_status = $request->order_status;
-           if($order_status == 2){
-               $update_order_status = [
-                   'order_status'  =>  2,
-                   'updated_at'    =>  date('Y-m-d H:i:s')
-               ];
-           }else if($order_status == 1){
-                $update_order_status = [
-                    'order_status'  =>  1,
-                    'updated_at'    =>  date('Y-m-d H:i:s')
-                ];
-           }else if($order_status == 0){
-                $update_order_status = [
-                    'order_status'  =>  0,
-                    'updated_at'    =>  date('Y-m-d H:i:s')
-                ];
-           }else if($order_status == 3){
-                $update_order_status = [
-                    'order_status'  =>  3,
-                    'updated_at'    =>  date('Y-m-d H:i:s')
-                ];
-        }
-        Order::where('id',$id)->update($update_order_status);
-        return response()->json(['orderStatus' => 'Order Status Updated'],200);
+            $payment_status = $request->payment_status;
+            Order::where('id',$id)->update(['order_status' => $order_status]);
+            Order::where('id',$id)->update(['payment_status'  => $payment_status]);
+            Payment::where('order_id',$id)->update(['payment_status'  => $payment_status]);
+            return response()->json(['orderStatus' => 'Order Status Updated'],200);
         }
     }
 

@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             WhishlistSeeder::class,
             CartSeeder::class,
             OrderProductSeeder::class,
+            PaymentSeeder::class,
         ]);
     }
 }
