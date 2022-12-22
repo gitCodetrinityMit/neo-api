@@ -73,7 +73,7 @@ class OrdersController extends Controller
     public function orderList(Request $request){
 
         if(Auth::check()){
-            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','user_id','total_price','created_at','updated_at')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
+            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','user_id','total_price','created_at','updated_at','order_number')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
 
             $paginate = $request->show ? $request->show : 10;
             $orders = $orders->latest()->paginate($paginate);
