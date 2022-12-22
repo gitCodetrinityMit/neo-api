@@ -114,7 +114,7 @@ class OrdersController extends Controller
 
     public function updateStatus(Request $request,$id) 
     {
-        $order_id = Order::with('orderProduct.products.product_galleries')->where('id',$id)->select('id','payment_status','order_status','shippping_address','order_number')->first();
+        $order_id = Order::with('orderProduct.products.product_galleries')->where('id',$id)->select('id','payment_status','order_status','shippping_address','order_number','payment_method')->first();
 
         if(!$order_id){
             return response()->json(['success' => 'Order Id Error!!!'],401);
@@ -125,9 +125,13 @@ class OrdersController extends Controller
             if($order_status == 1 && $payment_status == 1){
                 Cart::where('user_id',auth()->user()->id)->delete();
             }
+
+            if($order_id->payment_method == 'COD'){
+                $order_status = 2; // payment type cod then changed only order status
+            }
            
-            Order::where('id',$id)->update(['order_status' => $order_status]);
-            Order::where('id',$id)->update(['payment_status'  => $payment_status]);
+            Order::where('id',$id)->update(['order_status' => $order_status,'payment_status' => $payment_status]);
+            // Order::where('id',$id)->update(['payment_status'  => $payment_status]);
             Payment::where('order_id',$id)->update(['payment_status'  => $payment_status]);
             return response()->json(['orderStatus' => 'Order Updated','orderDetail'  => $order_id],200);
         }

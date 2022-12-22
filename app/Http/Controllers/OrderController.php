@@ -51,8 +51,8 @@ class OrderController extends Controller
         }else{
             $order_status = $request->order_status;
             $payment_status = $request->payment_status;
-            Order::where('id',$id)->update(['order_status' => $order_status]);
-            Order::where('id',$id)->update(['payment_status'  => $payment_status]);
+            Order::where('id',$id)->update(['order_status' => $order_status,'payment_status'  => $payment_status]);
+            // Order::where('id',$id)->update(['payment_status'  => $payment_status]);
             Payment::where('order_id',$id)->update(['payment_status'  => $payment_status]);
             return response()->json(['orderStatus' => 'Order Status Updated'],200);
         }
