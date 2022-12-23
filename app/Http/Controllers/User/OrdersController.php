@@ -18,18 +18,6 @@ class OrdersController extends Controller
     public function createOrder(Request $request){
 
         if(Auth::check()){
-
-            // Validation Add
-            $validator = Validator::make($request->all(),[
-                'contact_no'    =>  'required|max:10',
-                'country'       =>  'required',
-                'state'         =>  'required',
-                'city'          =>  'required'
-            ]);
-
-            if($validator->fails()){
-                return response()->json(['error' => $validator->messages()],401);
-            }
             
             $products = json_decode($request->product_data);
             if(!$products){
@@ -46,6 +34,8 @@ class OrdersController extends Controller
                 $order->country = $request->country;
                 $order->state = $request->state;
                 $order->city = $request->city;
+                $order->first_name = $request->first_name;
+                $order->last_name = $request->last_name;
                 $order->contact_no = $request->contact_no;
                 $order->save();
                 
@@ -94,7 +84,7 @@ class OrdersController extends Controller
     public function orderList(Request $request){
 
         if(Auth::check()){
-            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','city','user_id','total_price','created_at','updated_at','order_number')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
+            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','city','state','contact_no','country','user_id','total_price','created_at','updated_at','order_number')->where('user_id',auth()->user()->id)->orderBy('id','DESC');
 
             $paginate = $request->show ? $request->show : 10;
             $orders = $orders->latest()->paginate($paginate);
@@ -106,7 +96,9 @@ class OrdersController extends Controller
     public function singleOrderShow(Request $request,$id){
 
         if(Auth::check()){
-            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','city','total_price','created_at','updated_at','order_number')->where('user_id',auth()->user()->id)->where('id',$id)->orderBy('id','DESC');
+            $orders = Order::with('OrderProduct.products.product_galleries')->select('id','first_name','last_name','shipping_price','payment_status','order_status','payment_method','total_price','shippping_address','city','state','contact_no','country','total_price','created_at','updated_at','order_number')->where('user_id',auth()->user()->id)->where('id',$id)->orderBy('id','DESC');
+
+             $transaction_id = Payment::where('order_id',$id)->get();
 
             $paginate = $request->show ? $request->show : 10;
             $orders = $orders->paginate($paginate);
@@ -146,14 +138,15 @@ class OrdersController extends Controller
         }else{
             $order_status = $request->order_status;
             $payment_status = $request->payment_status;
+            $transaction_id = $request->transaction_id;
             
             if($order_status == 1 && $payment_status == 1){
                 Cart::where('user_id',auth()->user()->id)->delete();
             }
            
-            Order::where('id',$id)->update(['order_status' => $order_status,'payment_status' => $payment_status]);
+            Order::where('id',$id)->update(['order_status' => $order_status,'payment_status' => $payment_status,]);
             // Order::where('id',$id)->update(['payment_status'  => $payment_status]);
-            Payment::where('order_id',$id)->update(['payment_status'  => $payment_status]);
+            Payment::where('order_id',$id)->update(['payment_status'  => $payment_status,'transaction_id' => $transaction_id]);
             return response()->json(['orderStatus' => 'Order Updated','orderDetail'  => $order_id],200);
         }
     }

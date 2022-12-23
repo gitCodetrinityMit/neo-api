@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('state')->nullable();
             $table->string('contact_no')->nullable();
             $table->string('city')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->text('shippping_address');
             $table->timestamps();
         });
