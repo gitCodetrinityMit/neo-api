@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use App\Models\Cart;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Validator;
 
 class OrdersController extends Controller
 {
@@ -17,6 +18,19 @@ class OrdersController extends Controller
     public function createOrder(Request $request){
 
         if(Auth::check()){
+
+            // Validation Add
+            $validator = Validator::make($request->all(),[
+                'contact_no'    =>  'required|max:10',
+                'country'       =>  'required',
+                'state'         =>  'required',
+                'city'          =>  'required'
+            ]);
+
+            if($validator->fails()){
+                return response()->json(['error' => $validator->messages()],401);
+            }
+            
             $products = json_decode($request->product_data);
             if(!$products){
                 return response()->json(['error' => 'Product Data Error!!!'],401);
@@ -29,6 +43,10 @@ class OrdersController extends Controller
                 $order->payment_method = $request->payment_method;
                 $order->total_price = $request->total_price;
                 $order->shippping_address = $request->shippping_address;
+                $order->country = $request->country;
+                $order->state = $request->state;
+                $order->city = $request->city;
+                $order->contact_no = $request->contact_no;
                 $order->save();
                 
                 foreach ($products as $key => $thisProduct) {
@@ -64,8 +82,11 @@ class OrdersController extends Controller
                     Cart::where('user_id',auth()->user()->id)->delete(); 
                 }
 
+                $order_id = Order::with('orderProduct.products.product_galleries')->where('id',$order->id)->select('id','payment_status','order_status','shippping_address','order_number','payment_method')->first();
+                
                 Order::where('id',$order->id)->update(['order_number' => '#10000'.$order->id]);
-                return response()->json(['success' => 'Order Created Successfully','order_id' => $order->id],200);     
+                return response()->json(['success' => 'Order Created Successfully','order_id' => $order->id,
+                'orderUserDetail' => $order_id],200);     
             }
         }
     }
