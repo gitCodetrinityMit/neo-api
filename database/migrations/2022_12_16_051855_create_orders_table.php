@@ -23,6 +23,10 @@ return new class extends Migration
             $table->string('order_status')->default(2); //processing
             $table->string('payment_method');
             $table->string('total_price');
+            $table->string('country')->nullable();
+            $table->string('state')->nullable();
+            $table->string('contact_no')->nullable();
+            $table->string('city')->nullable();
             $table->text('shippping_address');
             $table->timestamps();
         });
