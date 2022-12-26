@@ -18,7 +18,7 @@ class adminAuth
     public function handle(Request $request, Closure $next)
     {
         if(Auth::user()){
-            if(Auth::user()->user_type == 0 ||Auth::user()->user_type == 1 ) {
+            if(Auth::user()->user_type == 'admin' || Auth::user()->user_type == 'user' ) {
                 return $next($request);
             }else {
                 return response()->json(['error','Access Denied! as you are not as admin'],401);

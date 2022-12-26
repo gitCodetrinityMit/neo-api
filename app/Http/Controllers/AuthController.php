@@ -21,10 +21,21 @@ class AuthController extends Controller
      * @return JSON $json
      * 
      */
-    public function userList(){
+    public function userList(Request $request){
         
         // List All SignUp User
-        $users = User::toBase()->get();
+        $users = User::select('id','user_name','email','first_name','last_name','phone_no','user_type');
+
+        if($request->search){
+            $users = $users->where('user_name', 'like', '%'.$request->search.'%')
+                           ->orWhere('email', 'like', '%'.$request->search.'%')
+                           ->orWhere('first_name', 'like', '%'.$request->search.'%')
+                           ->orWhere('last_name', 'like', '%'.$request->search.'%')
+                           ->orWhere('phone_no', 'like', '%'.$request->search.'%')
+                           ->orWhere('user_type', 'like', '%'.$request->search.'%');
+        }
+        $paginate = $request->show ? $request->show : 10;
+        $users = $users->latest()->paginate($paginate);
 
         return response()->json([
             'user_list' =>  $users
