@@ -27,7 +27,7 @@ class OrderController extends Controller
     }
 
     public function singleOrder(Request $request,$id){
-        $orders = Order::with('OrderProduct.products.product_galleries')->select('id','user_id','shipping_price','payment_status','order_status','payment_method','shippping_address','total_price','created_at','updated_at')->selectRaw('DATE_FORMAT(created_at,"%d, %b %Y / %h:%i %p") as date')->where('id',$id)->orderBy('id','DESC');
+        $orders = Order::with('OrderProduct.products.product_galleries')->select('id','user_id','shipping_price','payment_status','order_status','payment_method','shippping_address','total_price','order_number','created_at','updated_at')->selectRaw('DATE_FORMAT(created_at,"%d, %b %Y / %h:%i %p") as date')->where('id',$id)->orderBy('id','DESC');
 
         $orders = $orders->with(['user' => function($q){
             $q->select('id','email','user_name','first_name','last_name');
