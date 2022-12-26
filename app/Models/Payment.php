@@ -10,7 +10,7 @@ class Payment extends Model
     use HasFactory;
     protected $table = 'payments';
     protected $primarykey = 'id';
-    protected $fillable = ['product_id','user_id'];
+    protected $guarded = ['id'];
 
     public function products()
     {
@@ -24,6 +24,6 @@ class Payment extends Model
 
     public function order()
     {
-        return $this->hasMany(Order::class);
+        return $this->belongsTo(Order::class);
     }
 }
