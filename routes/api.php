@@ -60,6 +60,8 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::get('/category/{id}','editCategory')->name('category.edit');
         Route::post('/category/{id}', 'updateCategory')->name('category.update');
         Route::delete('/category/{id}','deleteCategory')->name('category.delete');
+        Route::get('/category-active', 'activeCategory')->name('category.active');
+        Route::get('/category-inactive', 'inActiveCategory')->name('category.inactive');
     });
  
     // Product Route

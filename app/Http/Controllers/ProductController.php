@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductGallery;
@@ -47,20 +48,32 @@ class ProductController extends Controller
             });
         }
 
+        // $category = Category::where('id',$request->category)->orWhere('parent_id', 'LIKE', '%'.$request->category.'%')->get(); 
+
+        // if($request->subcategory){
+        //     $product = $category->with('product_category.category', function ($query) use ($request) {
+        //         $query->where('id', $request->subcategory)->orWhere('parent_id', 'LIKE', '%'.$request->subcategory.'%');
+        //     });
+        // }else if($request->childcategory){
+        //     $product = $category->with('product_category.category', function ($query) use ($request) {
+        //         $query->where('id', $request->childcategory);
+        //     });
+        // }
+
         if ($request->childcategory) {
             $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-            $query->where('id', $request->childcategory);
+                $query->where('id', $request->childcategory);
             });
         } elseif ($request->subcategory) {
             $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-            $query->where('id', $request->subcategory)->orWhere('parent_id', 'LIKE', '%'.$request->subcategory.'%');
+                $query->where('id', $request->subcategory)->orWhere('parent_id', 'LIKE', '%'.$request->subcategory.'%');
             });
         } elseif ($request->category) {
             $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-            $query->where('id', $request->category)->orWhere('parent_id', 'LIKE', '%'.$request->category.'%');
+                $query->where('id', $request->category)->orWhere('parent_id', 'LIKE', '%'.$request->category.'%');
             });
         }
-        
+            
         $paginate = $request->show ? $request->show : 15;
         $product = $product->latest()->paginate($paginate);
 

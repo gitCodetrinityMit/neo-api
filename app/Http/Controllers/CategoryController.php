@@ -141,4 +141,42 @@ class CategoryController extends Controller
         Category::find($id)->delete();
         return response()->json(['success' => 'Category Deleted Success'],200);  
     }
+
+    /**
+     * Active Category Listing
+     *
+     * @param Request $request
+     * 
+     * @return JSON $json
+     * 
+     */
+    public function activeCategory(Request $request) 
+    {
+        // Get All Parent Level Category
+        $parentCategories = Category::select('id','parent_id', 'slug','name','status','created_at')
+        ->where('status',1)->where('parent_id',0)->get();
+        
+        // Get Nestable Category Data
+        $activeCategories = Category::nestable($parentCategories);
+
+        return response()->json(['activeCategory' => $activeCategories],200);
+    }
+
+    /**
+     * InActive Category Listing
+     *
+     * @return JSON $json
+     * 
+     */
+    public function inActiveCategory()
+    {
+        // Get All Parent Level Category
+        $parentCategories = Category::select('id','parent_id', 'slug','name','status','created_at')
+        ->where('status',0)->where('parent_id',0)->get();
+        
+        // Get Nestable Category Data
+        $inactiveCategories = Category::nestable($parentCategories)->where('status',0);
+
+        return response()->json(['inActiveCategory' => $inactiveCategories],200);
+    }
 }

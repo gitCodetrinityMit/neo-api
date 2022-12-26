@@ -43,7 +43,7 @@ class ProfileController extends Controller
 
         // Validation For User Profile
         $validator = Validator::make($request->all(),[
-            'email' =>  'required|email|unique:users,email',
+            // 'email' =>  'required|email|unique:users,email',
             'user_name' => 'required',
             'phone_no'  =>  'required|numeric|digits:10'
         ]);
@@ -85,7 +85,7 @@ class ProfileController extends Controller
         // Update User Profile Detail
         $user_profile = [
             'user_name'   => $request->user_name,
-            'email'       => $request->email,
+            // 'email'       => $request->email,
             'first_name'  => $request->first_name,
             'last_name'   => $request->last_name,
             'password'    => Hash::make($request->password),
