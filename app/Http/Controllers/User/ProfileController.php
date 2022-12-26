@@ -44,7 +44,8 @@ class ProfileController extends Controller
         // Validation For User Profile
         $validator = Validator::make($request->all(),[
             'email' =>  'required|email|unique:users,email',
-            'user_name' => 'required'
+            'user_name' => 'required',
+            'phone_no'  =>  'required|numeric|digits:10'
         ]);
 
         if($validator->fails()){
@@ -88,7 +89,8 @@ class ProfileController extends Controller
             'first_name'  => $request->first_name,
             'last_name'   => $request->last_name,
             'password'    => Hash::make($request->password),
-            'profile'     => $profile_name 
+            'profile'     => $profile_name,
+            'phone_no'    => $request->phone_no
         ];
         User::where('id',$user_check)->update($user_profile);
         return response()->json(['userProfile' => 'User Profile Updated'],200);

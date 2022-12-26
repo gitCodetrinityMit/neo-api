@@ -21,10 +21,13 @@ class AuthController extends Controller
      * @return JSON $json
      * 
      */
-    public function userList(){
+    public function userList(Request $request){
         
         // List All SignUp User
-        $users = User::toBase()->get();
+        $users = User::select('id','user_name','email','first_name','last_name','phone_no','user_type');
+
+        $paginate = $request->show ? $request->show : 10;
+        $users = $users->latest()->paginate($paginate);
 
         return response()->json([
             'user_list' =>  $users
