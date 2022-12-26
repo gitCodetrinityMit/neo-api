@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
             'last_name' =>   'vaghasiya',
             'email_verified_at' =>   NULL,
             'password'  =>   Hash::make('123456789'),
-            'user_type' =>   0,
+            'user_type' =>   'admin',
             'remember_token'    =>    'e2b3a89e-b2f6-4e18-9323-d6b8c69a7892',
             ],
             [
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
                 'last_name' =>   'vaghasiya',
                 'email_verified_at' =>   NULL,
                 'password'  =>   Hash::make('123456789'),
-                'user_type' =>   1,
+                'user_type' =>   'user',
                 'remember_token'    =>    'e2b3a89e-b2f6-4e18-9323-d6b8c69a7892',
             ]
         ];

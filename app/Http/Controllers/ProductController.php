@@ -263,4 +263,42 @@ class ProductController extends Controller
 
         return response()->json(['success' => 'Product Deleted Successfully',],200);
     }
+
+    /**
+     * Active Product List
+     *
+     * @param Request $request
+     * 
+     * @return JSON $json
+     * 
+     */
+    public function activeProduct(Request $request)
+    {
+        // Active Product Listing
+        $activeProduct = Product::with('product_category.category','product_galleries')->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status','created_at')->where('status',1);
+
+        $paginate = $request->show ? $request->show : 10;
+        $activeProduct = $activeProduct->latest()->paginate($paginate);
+
+        return response()->json(['activeProducts' => $activeProduct],200);
+    }
+
+       /**
+     * Active Product List
+     *
+     * @param Request $request
+     * 
+     * @return JSON $json
+     * 
+     */
+    public function inActiveProduct(Request $request)
+    {
+        // Active Product Listing
+        $inActiveProduct = Product::with('product_category.category','product_galleries')->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status','created_at')->where('status',0);
+
+        $paginate = $request->show ? $request->show : 10;
+        $inActiveProduct = $inActiveProduct->latest()->paginate($paginate);
+
+        return response()->json(['inActiveProduct' => $inActiveProduct],200);
+    }
 }
