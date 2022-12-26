@@ -65,6 +65,8 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     // Product Route
     Route::controller(ProductController::class)->group(function(){
         Route::get('/product', 'listProduct')->name('product.list');
+        Route::get('/active-product', 'activeProduct')->name('product.active');
+        Route::get('/inactive-product', 'inActiveProduct')->name('product.in-active');
         Route::post('/product', 'addProduct')->name('product.add');
         Route::get('/product/{id}', 'editProduct')->name('product.edit');
         Route::delete('/product/{id}','deleteProduct')->name('product.delete');

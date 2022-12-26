@@ -11,6 +11,7 @@ class Payment extends Model
     protected $table = 'payments';
     protected $primarykey = 'id';
     protected $fillable = ['product_id','user_id'];
+    protected $guarded = ['id'];
 
     public function products()
     {

@@ -132,7 +132,7 @@ class OrdersController extends Controller
     public function updateStatus(Request $request,$id) 
     {
         $order_id = Order::with('orderProduct.products.product_galleries')->where('id',$id)->select('id','payment_status','order_status','shippping_address','order_number','payment_method')->first();
-
+        
         if(!$order_id){
             return response()->json(['success' => 'Order Id Error!!!'],401);
         }else{
@@ -141,11 +141,20 @@ class OrdersController extends Controller
             $transaction_id = $request->transaction_id;
             
             if($order_status == 1 && $payment_status == 1){
+                
+                $orders = OrderProducts::with('products.product_galleries')->where('order_id',$id)
+                ->select('id','order_id','product_id','product_name','product_quantity')
+                ->get();
+
+                foreach ($orders as $order) {
+                    // Stock Manage After Order Stage Successfully Completed
+                    Product::where('id',$order->product_id)->decrement('stock',$order->product_quantity);
+                }
+                // Cart Clear After Order Processing Completed
                 Cart::where('user_id',auth()->user()->id)->delete();
             }
-           
+ 
             Order::where('id',$id)->update(['order_status' => $order_status,'payment_status' => $payment_status,]);
-            // Order::where('id',$id)->update(['payment_status'  => $payment_status]);
             Payment::where('order_id',$id)->update(['payment_status'  => $payment_status,'transaction_id' => $transaction_id]);
             return response()->json(['orderStatus' => 'Order Updated','orderDetail'  => $order_id],200);
         }
