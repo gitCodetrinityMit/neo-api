@@ -48,17 +48,13 @@ class ProductController extends Controller
             });
         }
 
-        // $category = Category::where('id',$request->category)->orWhere('parent_id','LIKE', '%'.$request->category.'%')->get();
+        // Product Listing According To Category Subcategory & Child Category Wise
         if($request->childcategory){
-            $product = $product->with('product_category.category', function ($query) use ($request) {
-                $query->where('id', $request->childcategory);
-            });
+            $product = Category::with('product_category.products')->where('id',$request->childcategory);
         }else if($request->subcategory){
-            $product = $product->with('product_category.category', function ($query) use ($request) {
-                $query->where('id', $request->subcategory)->orWhere('parent_id', 'LIKE', '%'.$request->subcategory.'%');
-            });
+            $product = Category::with('product_category.products')->where('id',$request->subcategory)->orWhere('parent_id','LIKE', '%'.$request->subcategory.'%');
         }else if($request->category) {
-            $product = Category::where('id',$request->category)->orWhere('parent_id','LIKE', '%'.$request->category.'%');
+            $product = Category::with('product_category.products')->where('id',$request->category)->orWhere('parent_id','LIKE', '%'.$request->category.'%');
         }
         
         // if ($request->childcategory) {
