@@ -12,7 +12,7 @@ class OrderController extends Controller
         $orders = Order::with('OrderProduct.products.product_galleries')->select('id','shipping_price','payment_status','order_status','user_id','payment_method','shippping_address','total_price','order_number','created_at','updated_at');
         
         $orders = $orders->with('payment', function($q) {
-            $q->select('id','order_id','transaction_id')->first();
+            $q->select('id','order_id','transaction_id');
         })
         ->selectRaw('DATE_FORMAT(created_at,"%d, %b %Y / %h:%i %p") as date')->orderBy('id','DESC');
 
@@ -21,6 +21,7 @@ class OrderController extends Controller
         }]);
 
         if($request->search){
+            // dd($request->search);
             $orders = $orders->where('order_status', 'LIKE', $request->search)
                             ->orWhere('payment_status', 'LIKE', $request->search)
                             ->orWhere('payment_method', 'LIKE', '%'.$request->search.'%')
