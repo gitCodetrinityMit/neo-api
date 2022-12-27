@@ -50,6 +50,9 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::post('/user-update', 'updateUser')->name('user.update');
         Route::delete('/remove-user/{id}', 'removeUser')->name('user.remove');
         Route::post('/forgot-password','forgotPassword')->name('user.forgotpassword');
+        Route::post('/update', 'adminProfileUpdate')->name('user.auth-update');
+        // Route::get('/old-password', 'oldPassword')->name('get.old-password');
+        Route::post('/change-password', 'changePassword')->name('update.change-password');
         Route::post('/logout', 'logout')->name('user.logout');
     });
 

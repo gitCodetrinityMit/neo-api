@@ -10,7 +10,7 @@ class Category extends Model
 {
     use HasFactory;
     protected $table = 'categories';
-    protected $primarykey = 'id';
+    // protected $primarykey = 'id';
 
     // Define Eloquent Parent Child Relationship
     public function parent() {
