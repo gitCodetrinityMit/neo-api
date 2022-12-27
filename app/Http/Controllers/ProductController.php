@@ -29,42 +29,15 @@ class ProductController extends Controller
             $q->select('id','product_id','image');
         }]);
 
+        $category = Category::with('product_category.products','children')->select('id','name','slug','parent_id','status');
         if($request->childcategory){
-            $product = $product->whereHas('product_category.category', function($q) use ($request){
-                $q->where('id',$request->childcategory);
-            })->get();
-            dump($product);
+            $product = $category->where('id',$request->childcategory);
+        }elseif($request->subcategory){
+            $product = $category->where('id',$request->subcategory)->orWhere('parent_id','LIKE','%'.$request->subcategory.'%');
+        }elseif($request->category){
+            $product = $category->where('id',$request->category)->orWhere('parent_id','LIKE','%'.$request->category.'%');
         }
-        elseif($request->subcategory){
-            $product = $product->whereHas('product_category.category', function($q) use ($request){
-                $q->where('id',$request->subcategory)->orWhere('parent_id','LIKE',$request->subcategory);
-            })->get();
-        }
-        elseif($request->category){
-            $product = $product->whereHas('product_category.category', function($q) use ($request){
-                $q->where('id',$request->category)->orWhere('parent_id','LIKE',$request->category);
-            })->get();
-        }
-
-
-        // if ($request->childcategory) {
-        //     $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-        //         $query->where('id', $request->childcategory);
-        //     });
-        // } elseif ($request->subcategory) {
-        //     // dump($request->subcategory);
-        //     $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-        //         $query->where('id',$request->subcategory)->orWhere('parent_id','like','%'.$request->subcategory.'%');
-        //     });
-        //     // dump($product);
-        // } elseif ($request->category) {
-        //     // dump($request->category);
-        //     // dump($product);
-        //     $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-        //         $query->where('id',$request->category)->orWhere('parent_id','like','%'.$request->category.'%');
-        //     });
-        // }
-
+    
         // Product Price Filter
         if ($request->has('min_price') && $request->has('max_price')) {
             $min = $request->min_price;
