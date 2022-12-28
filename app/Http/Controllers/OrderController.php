@@ -21,11 +21,10 @@ class OrderController extends Controller
         }]);
 
         if($request->search){
-            // dd($request->search);
-            $orders = $orders->where('order_status', 'LIKE', $request->search)
-                            ->orWhere('payment_status', 'LIKE', $request->search)
-                            ->orWhere('payment_method', 'LIKE', '%'.$request->search.'%')
-                            ->orWhere('order_number', 'LIKE', '%'.$request->search.'%');
+            $orders = $orders->where('order_status', 'LIKE','%'.$request->search.'%')
+                            ->orwhere('payment_status', 'LIKE', '%'.$request->search.'%')
+                            ->orwhere('payment_method', 'LIKE', '%'.$request->search.'%')
+                            ->orwhere('order_number', 'LIKE', '%'.$request->search.'%');
         }
 
         $paginate = $request->show ? $request->show : 10;
