@@ -20,12 +20,11 @@ class OrderController extends Controller
             $q->select('id','email','user_name','first_name','last_name');
         }]);
 
-        if($request->search){
-            // dd($request->search);
-            $orders = $orders->where('order_status', 'LIKE', $request->search)
-                            ->orWhere('payment_status', 'LIKE', $request->search)
-                            ->orWhere('payment_method', 'LIKE', '%'.$request->search.'%')
-                            ->orWhere('order_number', 'LIKE', '%'.$request->search.'%');
+        if($request->search != ''){
+            $orders = $orders->where("order_status", $request->search) 
+                ->orWhere("order_number", "LIKE", "%".$request->search."%")
+                ->orWhere("payment_status",$request->search)
+                ->orWhere("payment_method", "LIKE", "%".$request->search."%");
         }
 
         $paginate = $request->show ? $request->show : 10;
