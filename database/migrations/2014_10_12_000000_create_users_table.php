@@ -21,9 +21,16 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('phone_no')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->string('user_type')->default(0);
             $table->string('password');
             $table->string('profile')->nullable();
-            $table->string('user_type')->default(0);
+            $table->string('country')->nullable();
+            $table->string('state')->nullable();
+            $table->string('city')->nullable();
+            $table->text('address')->nullable();
+            $table->string('twitter_account')->nullable();
+            $table->string('facebook_account')->nullable();
+            $table->string('instagram_account')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

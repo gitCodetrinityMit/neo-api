@@ -284,4 +284,84 @@ class AuthController extends Controller
             return response()->json(['error' => 'User Delete Error!!!'],401);
         }
     }
+
+    /**
+     * Admin Profile Update In DataBase
+     *
+     * @param Request $request
+     * 
+     * @return Message (error or success)
+     * 
+     */
+    public function adminProfileUpdate(Request $request) 
+    {
+        $admin_auth = Auth::user()->id;
+
+        $admin = User::where('id',$admin_auth)->first();
+
+        if(Auth::check()){
+            
+            // Validation For Update Data
+            $validator = Validator::make($request->all(), [
+                'first_name'    =>  'required',
+                'last_name'     =>  'required',
+                'phone_no'      =>  'required'
+            ]);
+
+            if($validator->fails()){
+                return response()->json(['error' => $validator->messages()],200);
+            }
+
+            // Update Admin Data
+            $admin_update = [
+                'first_name'    => $request->first_name,
+                'last_name'     => $request->last_name,
+                'country'       => $request->country,
+                'state'         => $request->state,
+                'city'          => $request->city,
+                'phone_no'      => $request->phone_no,
+                'address'       => $request->address,
+                'twitter_account' =>   $request->twitter_account,
+                'facebook_account' => $request->facebook_account,
+                'instagram_account' => $request->instagram_account,
+            ];
+
+            User::where('id',$admin_auth)->update($admin_update);
+            return response()->json(['success' => 'Admin Profile Updated'],200);
+        }
+    }
+
+    /**
+     * Change Password For Admin
+     *
+     * @param Request $request
+     * 
+     * @return Message (error or success)
+     * 
+     */
+    public function changePassword(Request $request) 
+    {   
+        if(Auth::check()){
+
+            $auth_check = User::where('id',Auth::user()->id)->first();
+
+            // Validation For Password
+            $validator = Validator::make($request->all(), [
+                'password'    =>  'required|min:8|max:12',
+            ]);
+
+            if($validator->fails()){
+                return response()->json(['error' => $validator->messages()],200);
+            }
+
+            $new_password = $request->password;
+
+            if(Hash::check($new_password, $auth_check->password)){
+                return response()->json(['error' => 'You Already Used This Password!!Try Another Password'],401);
+            }else{
+                User::where('id',Auth::user()->id)->update(['password' => Hash::make($new_password)]);
+                return response()->json(['success' => 'Admin Password Changed'],200);
+            }
+        }
+    }
 }

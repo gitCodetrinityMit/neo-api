@@ -21,13 +21,23 @@ class ProductController extends Controller
      */
     public function listProduct(Request $request) 
     {
-  
+        
         // Product Listing
-        $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status','created_at')->orderBy('id','desc');
+        $product = Product::with('product_category.category')->select('id','name','slug','sku','selling_price','regular_price','description','short_description','stock','status','created_at');
 
         $product = $product->with(['product_galleries' => function($q){
             $q->select('id','product_id','image');
         }]);
+
+        $category = Category::with('product_category.products','children')->select('id','name','slug','parent_id','status');
+        if($request->childcategory){
+            $product = $category->where('id',$request->childcategory);
+        }elseif($request->subcategory){
+            $product = $category->where('id',$request->subcategory)->orWhere('parent_id','LIKE','%'.$request->subcategory.'%');
+        }elseif($request->category){
+            $product = $category->where('id',$request->category)->orWhere('parent_id','LIKE','%'.$request->category.'%');
+        }
+    
         // Product Price Filter
         if ($request->has('min_price') && $request->has('max_price')) {
             $min = $request->min_price;
@@ -48,32 +58,20 @@ class ProductController extends Controller
             });
         }
 
-        // $category = Category::where('id',$request->category)->orWhere('parent_id','LIKE', '%'.$request->category.'%')->get();
-        if($request->childcategory){
-            $product = $product->with('product_category.category', function ($query) use ($request) {
-                $query->where('id', $request->childcategory);
-            });
-        }else if($request->subcategory){
-            $product = $product->with('product_category.category', function ($query) use ($request) {
-                $query->where('id', $request->subcategory)->orWhere('parent_id', 'LIKE', '%'.$request->subcategory.'%');
-            });
-        }else if($request->category) {
-            $product = Category::where('id',$request->category)->orWhere('parent_id','LIKE', '%'.$request->category.'%');
-        }
-        
-        // if ($request->childcategory) {
-        //     $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-        //         $query->where('id', $request->childcategory);
-        //     });
-        // } elseif ($request->subcategory) {
-        //     $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-        //         $query->where('id', $request->subcategory)->orWhere('parent_id', 'LIKE', '%'.$request->subcategory.'%');
-        //     });
-        // } elseif ($request->category) {
-        //     $product = $product->whereHas('product_category.category', function ($query) use ($request) {
-        //         $query->where('id', $request->category)->orWhere('parent_id', 'LIKE', '%'.$request->category.'%');
-        //     });
+        // Product Listing According To Category Subcategory & Child Category Wise
+        // if($request->childcategory){
+        //     $product = Category::with('product_category.products')->where('id',$request->childcategory);
+        // }else if($request->subcategory){
+        //     $product = Category::with('product_category.products')->where('id',$request->subcategory)->orWhere('parent_id','LIKE', '%'.$request->subcategory.'%');
+        // }else if($request->category) {
+        //     $product = Category::with('product_category.products')->where('id',$request->category)->orWhere('parent_id','LIKE', '%'.$request->category.'%');
         // }
+
+        // $category = Category::where('parent_id',0)->with(['children' =>function ($q) {
+        //     $q->with(['children' => function ($q) {
+        //         $q->get();
+        //     }]);
+        // } ] )->latest()->get();
             
         $paginate = $request->show ? $request->show : 15;
         $product = $product->latest()->paginate($paginate);
