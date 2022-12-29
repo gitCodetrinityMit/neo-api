@@ -128,11 +128,24 @@ class CartController extends Controller
             }else{
                 $cart_update = [
                     'product_qty'    =>  $request->product_qty,
-                    'total'          =>  $product->products->regular_price * $request->product_qty,
-                    'subtotal'       =>  $product->products->regular_price * $request->product_qty
+                    'subtotal'       =>  $product->products->regular_price * $request->product_qty,
+                    // 'total'          =>  $product->products->regular_price * $request->product_qty,
                 ];
                 Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
                 
+                // Product SubTotal  Value Get
+                $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
+                $total = $cart_check[0]->subtotal_data; 
+                // Update Total In DataBase
+                
+                if($request->flat_rate == 50){
+                    $total = $cart_check[0]->subtotal_data + 50;
+                }else{
+                    $total = $cart_check[0]->subtotal_data;
+                }
+                
+                Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
+
                 $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
                 
                 return response()->json(['success' => 'Cart Updated', 'cart' =>  $cart_list],200);
