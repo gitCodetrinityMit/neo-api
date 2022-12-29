@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -51,10 +52,14 @@ class CartController extends Controller
                     }else{
                         $cart_update = [
                             'product_qty'    =>  $product->product_qty + ($request->product_qty),
-                            'total'          =>  $product->products->regular_price * $request->product_qty,
-                            'subtotal'       =>  $product->products->regular_price * $request->product_qty
+                            'subtotal'       =>  $product->products->regular_price * ($product->product_qty + $request->product_qty),
                         ];
                         Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
+                        // Product SubTotal  Value Get
+                        $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
+                        $total = $cart_check[0]->subtotal_data; 
+                        // Update Total In DataBase
+                        $cart_check = Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
                         return response()->json(['success' => 'Product Cart Quantity Update'],200);
                     }
                 }
@@ -73,7 +78,10 @@ class CartController extends Controller
                         $cart->product_id = $request->product_id;
                         $cart->product_qty = $request->product_qty;
                         $cart->subtotal = $product->regular_price * $request->product_qty;
-                        $cart->total = $product->regular_price * $request->product_qty;
+                        $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
+                        $total = $product->regular_price * $request->product_qty + $cart_check[0]->subtotal_data; 
+                        $cart->total = $total;
+                        Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
                         $cart->save();
                         return response()->json(['success' => 'Product Add To Cart'], 200);
                     }
