@@ -52,3 +52,6 @@ class CartSeeder extends Seeder
         }
     }
 }
+
+'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'
+'gitCodetrinityMit'
