@@ -152,4 +152,25 @@ class CartController extends Controller
             }
         }
     }
+
+    /**
+     * Update Flat Amount In Total
+     *
+     * @return Message (error or success)
+     * 
+     */
+    public function updateFlatRate(Request $request)
+    {
+        // add this function changed
+        $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
+        $total = $cart_check[0]->subtotal_data; 
+        
+        if($request->flat_rate == 50){
+            $total = $cart_check[0]->subtotal_data + 50;
+        }else{
+            $total = $cart_check[0]->subtotal_data;
+        }
+        Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
+        return response()->json(['success' => 'Discount Addedd'],200);
+    }
 }

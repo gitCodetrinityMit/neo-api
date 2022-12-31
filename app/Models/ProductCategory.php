@@ -9,6 +9,7 @@ class ProductCategory extends Model
 {
     use HasFactory;
     protected $guarded = ['id'];
+    protected $fillable = ['id','product_id','category_id'];
 
     public static function boot() {
         parent::boot();
