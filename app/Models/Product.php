@@ -13,15 +13,18 @@ class Product extends Model
 {
     use HasFactory;
     protected $table = 'products';
-    protected $primarykey = 'id';
+    protected $guarded = ['id'];
     // protected $fillabele = ['name','description'];
 
     public static function boot() {
         parent::boot();
 
         self::deleting(function($products) {
+            // dump($products);
             $products->product_galleries()->each(function($images) {
+                // dump($images);
                 $imagepath = public_path()."/storage/$images->image";
+                // dump($imagepath);
                 $result = File::exists($imagepath);
                 if($result)
                 {
@@ -32,6 +35,7 @@ class Product extends Model
             });
 
             $products->product_category()->each(function($detail){
+                // dump($detail);
                 $detail->delete();
             });
         });

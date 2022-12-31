@@ -10,6 +10,7 @@ use App\Http\Controllers\User\OrdersController;
 use App\Http\Controllers\WhistlistController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\BuyNowController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -112,6 +113,7 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::post('/add-cart', 'addProductCart')->name('add.cart');
         Route::post('/remove-cart-item', 'removeCartProduct')->name('remove.cart.item');
         Route::post('/update-cart','updateCartItem')->name('cart.increment');
+        Route::post('/update-flat-rate', 'updateFlatRate')->name('cart.flat-amount');
     });
 
     //Order 
@@ -123,8 +125,15 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::post('/update-status/{id}','updateStatus')->name('status.update');
     });
 
+    // User Profile
     Route::controller(ProfileController::class)->group(function(){
         Route::get('/user-detail', 'userDetail')->name('user.profile.list');
         Route::post('/user-profile-update', 'updateUserProfile')->name('profile.update');
+    });
+
+    // Buy Now Add
+    Route::controller(BuyNowController::class)->group(function(){
+        Route::post('/product-buynow','productBuyNow')->name('product.buy-now');
+        Route::post('/cancel-buynow', 'cancelBuyNow')->name('product.cancel-buy-now');
     });
 });
