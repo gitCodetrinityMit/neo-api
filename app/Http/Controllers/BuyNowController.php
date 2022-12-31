@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BuyNow;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Cart;
@@ -111,7 +112,7 @@ class BuyNowController extends Controller
                     $order_pro->product_total_price = $product_total_price;
                     $order_pro->save();
 
-                    $cart = new Cart();
+                    $cart = new BuyNow();
                     $cart->product_id = $thisProduct->id;
                     $cart->user_id = Auth::user()->id;
                     $cart->product_qty = $thisProduct->qty;
@@ -155,15 +156,15 @@ class BuyNowController extends Controller
     {
         if(Auth::check()){
             
-            $product_check = Cart::with('products.product_galleries')->where('user_id',auth()->user()->id)->where('product_id',$request->product_id)->first();
+            $product_check = BuyNow::with('products.product_galleries')->where('user_id',auth()->user()->id)->where('product_id',$request->product_id)->first();
             
             if(!empty($product_check)){
                 
                 // Get Old Product Price
-                $old_price = Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->select('subtotal','total')->first();
+                $old_price = BuyNow::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->select('subtotal','total')->first();
 
                 $new_price = $old_price->total - $old_price->subtotal;
-                Cart::where('user_id',auth()->user()->id)->update(['total' => $new_price]);
+                BuyNow::where('user_id',auth()->user()->id)->update(['total' => $new_price]);
                
                 $product_check->delete();
                 return response()->json(['success' => 'Product Cancel From Buy Now'],200);

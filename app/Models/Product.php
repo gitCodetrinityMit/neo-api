@@ -47,7 +47,8 @@ class Product extends Model
      * @return Relation
      * 
      */
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
@@ -57,7 +58,8 @@ class Product extends Model
      * @return Relation
      * 
      */
-    public function product_galleries(){
+    public function product_galleries()
+    {
         return $this->hasMany(ProductGallery::class,'product_id','id');
     }
 
@@ -85,7 +87,13 @@ class Product extends Model
     {
         return $this->hasMany(Payment::class);
     }
-    public function orderProduct(){
+    public function orderProduct()
+    {
         return $this->hasMany(OrderProducts::class, 'product_id','id');
+    }
+
+    public function buy_now() 
+    {
+        return $this->hasMany(BuyNow::class);
     }
 }
