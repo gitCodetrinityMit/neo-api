@@ -18,14 +18,14 @@ class CartController extends Controller
             $user = auth()->user();
             $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty','total','subtotal')->get();
 
-            $cart_item = Cart::where('user_id',auth()->user()->id)->select('id')->count();
-            if($cart_item > 0){
-                $cart_length = 0;
-                $cart_count = $cart_item + $cart_length;
-            }else{
-                return response()->json(['error' => 'Your Cart Is Empty!!!'],401);
-            }
-            return response()->json(['cartCount' => $cart_count, 'success' => $cart_list, 'user' => $user],200);
+            // $cart_item = Cart::where('user_id',auth()->user()->id)->select('id')->count();
+            // if($cart_item > 0){
+            //     $cart_length = 0;
+            //     $cart_count = $cart_item + $cart_length;
+            // }else{
+            //     return response()->json(['error' => 'Your Cart Is Empty!!!'],401);
+            // }
+            return response()->json([ 'success' => $cart_list, 'user' => $user],200);
         }
     }
 
@@ -92,7 +92,15 @@ class CartController extends Controller
                         $cart->total = $total;
                         Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
                         $cart->save();
-                        return response()->json(['success' => 'Product Add To Cart'], 200);
+
+                        $cart_count = Cart::where('user_id',auth()->user()->id)->select('id')->count();
+                        if($cart_count > 0){
+                            $cart_total = 0;
+                            $cart_total = $cart_count + $cart_total;
+                        }else{
+                            return response()->json(['error' => 'Cart Data Not Found!!!'],401);
+                        }
+                        return response()->json(['success' => 'Product Add To Cart', 'cartTotal' =>  $cart_total], 200);
                     }
                 }
             }
