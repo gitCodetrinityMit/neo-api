@@ -164,7 +164,6 @@ class CartController extends Controller
      */
     public function updateFlatRate(Request $request)
     {
-        // add this function changed
         $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
         $total = $cart_check[0]->subtotal_data; 
         

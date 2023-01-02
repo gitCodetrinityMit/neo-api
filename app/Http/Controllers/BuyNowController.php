@@ -24,58 +24,7 @@ class BuyNowController extends Controller
     public function productBuyNow(Request $request)
     {
         if(Auth::check()){
-
-            // $product = Cart::with('products.product_galleries')->where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->first();
-
-            // if($product){ 
-            //     if($request->product_qty > $product->products->stock){
-            //         return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
-            //     }else{   
-            //         $cart = Cart::with('products')->where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->first();
-            //         $product_qty_check = $cart->product_qty + ($request->product_qty);
-            //         if($product_qty_check > $cart->products->stock){
-            //             return response()->json(['error' => 'Product Quantity Error!!!'],401);
-            //         }else{
-            //             $cart_update = [
-            //                 'product_qty'    =>  $product->product_qty + ($request->product_qty),
-            //                 'subtotal'       =>  $product->products->regular_price * ($product->product_qty + $request->product_qty),
-            //             ];
-            //             Cart::where('product_id',$request->product_id)->where('user_id',auth()->user()->id)->update($cart_update);
-                        
-            //             // Product SubTotal  Value Get
-            //             $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
-            //             $total = $cart_check[0]->subtotal_data; 
-                        
-            //             // Update Total
-            //             $cart_check = Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
-            //             return response()->json(['success' => 'Product Cart Quantity Update'],200);
-            //         }
-            //     }
-            // }else{
-            //     $cart = Cart::where('user_id', auth()->user()->id)->where('product_id', $request->product_id)->exists(); 
-            //     $product = Product::find($request->product_id);
-
-            //     if($request->product_qty == 0){
-            //         return response()->json(['error' => 'Selected Product Quantity Not Allowed!!!'],401); 
-            //     }else if($request->product_qty > $product->stock){
-            //         return response()->json(['error' => 'Product Quantity Invalid!!!'],401);
-            //     }else{
-            //         if (!$cart) { 
-            //             $cart = new Cart();
-            //             $cart->user_id = auth()->user()->id;
-            //             $cart->product_id = $request->product_id;
-            //             $cart->product_qty = $request->product_qty;
-            //             $cart->subtotal = $product->regular_price * $request->product_qty;
-            //             $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
-            //             $total = $product->regular_price * $request->product_qty + $cart_check[0]->subtotal_data; 
-            //             $cart->total = $total;
-            //             Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
-            //             $cart->save();
-            //             return response()->json(['success' => 'Buy Now Product Add To Cart'], 200);
-            //         }
-            //     }
-            // }
-
+            
            // Buy Now Order Create
             $products = json_decode($request->product_data);
             if(!$products){
@@ -243,10 +192,7 @@ class BuyNowController extends Controller
     public function cancelBuyNow(Request $request)
     {
         if(Auth::check()){
-            
-            $product_check = BuyNow::with('products.product_galleries')->where('user_id',auth()->user()->id)->where('product_id',$request->product_id)->first();
-            dd($product_check);
-            
+            $product_check = BuyNow::with('products.product_galleries')->where('user_id',auth()->user()->id)->where('product_id',$request->product_id)->first();            
             if(!empty($product_check)){
                 $product_check->delete();
                 return response()->json(['success' => 'Product Cancel From Buy Now'],200);
