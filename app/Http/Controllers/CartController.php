@@ -14,9 +14,18 @@ class CartController extends Controller
     public function index(Request $request)
     {
         if(Auth::check()){
+            
             $user = auth()->user();
             $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty','total','subtotal')->get();
-            return response()->json(['success' => $cart_list, 'user' => $user],200);
+
+            $cart_item = Cart::where('user_id',auth()->user()->id)->select('id')->count();
+            if($cart_item > 0){
+                $cart_length = 0;
+                $cart_count = $cart_item + $cart_length;
+            }else{
+                return response()->json(['error' => 'Your Cart Is Empty!!!'],401);
+            }
+            return response()->json(['cartCount' => $cart_count, 'success' => $cart_list, 'user' => $user],200);
         }
     }
 
@@ -135,15 +144,9 @@ class CartController extends Controller
                 
                 // Product SubTotal  Value Get
                 $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
+                
                 $total = $cart_check[0]->subtotal_data; 
                 // Update Total In DataBase
-                
-                if($request->flat_rate == 50){
-                    $total = $cart_check[0]->subtotal_data + 50;
-                }else{
-                    $total = $cart_check[0]->subtotal_data;
-                }
-                
                 Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
 
                 $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();

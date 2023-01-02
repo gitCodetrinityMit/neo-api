@@ -134,6 +134,8 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
     // Buy Now Add
     Route::controller(BuyNowController::class)->group(function(){
         Route::post('/product-buynow','productBuyNow')->name('product.buy-now');
+        Route::post('/update-buynow-product', 'updateProductBuyNow')->name('product.buy-now-update');
         Route::post('/cancel-buynow', 'cancelBuyNow')->name('product.cancel-buy-now');
+        Route::post('/update-buynow-status/{id}', 'updateBuyNowStatus')->name('product.update-buy-now-status');
     });
 });
