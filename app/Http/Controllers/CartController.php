@@ -165,8 +165,8 @@ class CartController extends Controller
         $cart_check = Cart::where('user_id', auth()->user()->id)->select(DB::raw('sum(subtotal) as subtotal_data'))->get();
         $total = $cart_check[0]->subtotal_data; 
         
-        if($request->flat_rate == 50){
-            $total = $cart_check[0]->subtotal_data + 50;
+        if(!empty($request->flat_rate)){
+            $total = $cart_check[0]->subtotal_data + $request->flat_rate;
         }else{
             $total = $cart_check[0]->subtotal_data;
         }
