@@ -146,7 +146,7 @@ class CartController extends Controller
                 
                 Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
 
-                $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty')->get();
+                $cart_list = Cart::with('products.product_galleries')->where('user_id','=',auth()->user()->id)->select('id','user_id','product_id','product_qty','total','subtotal')->get();
                 
                 return response()->json(['success' => 'Cart Updated', 'cart' =>  $cart_list],200);
             }
