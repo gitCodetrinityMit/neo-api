@@ -15,6 +15,21 @@ use App\Models\Payment;
 
 class BuyNowController extends Controller
 {
+
+    /**
+     * Product Buy Now List
+     *
+     * @return JSON $json
+     * 
+     */
+    public function buyNowList()
+    {
+        if(Auth::check()){
+            $buynow_product = BuyNow::with('products.product_galleries')->where('user_id',auth()->user()->id)->get();
+            return response()->json(['success' => $buynow_product],200);
+        }
+    }
+
     /**
      * Product Buy Now
      *
@@ -24,72 +39,62 @@ class BuyNowController extends Controller
     public function productBuyNow(Request $request)
     {
         if(Auth::check()){
-            
-           // Buy Now Order Create
-            $products = json_decode($request->product_data);
-            if(!$products){
-                return response()->json(['error' => 'Product Data Error!!!'],401);
+
+            // Check Already Product Existing Or Not
+            $product_check = BuyNow::where('product_id',$request->product_id)->first();
+            if($product_check){
+               return response()->json(['error' => 'Product Buy Now Error!!!'],401); 
             }else{
-                $order = new Order;
+                // Create Buy Now Product Order
+                $product_detail = Product::with('product_galleries')->where('id',$request->product_id)->first();
+                $buy_now = new BuyNow();
+                $buy_now->user_id = auth()->user()->id;
+                $buy_now->product_id = $request->product_id;
+                $buy_now->product_qty = $request->product_qty;
+                $buy_now->subtotal = $product_detail->selling_price; 
+                $buy_now->total = $product_detail->selling_price * $request->product_qty;
+                $buy_now->save();
+
+                $order = new Order();
                 $order->user_id = auth()->user()->id;
-                $order->shipping_price = $request->shipping_price;
-                $order->payment_status = $request->payment_status;
-                $order->payment_method = $request->payment_method;
-                $order->total_price = $request->total_price;
-                $order->shippping_address = $request->shippping_address;
-                $order->country = $request->country;
-                $order->state = $request->state;
-                $order->city = $request->city;
-                $order->first_name = $request->first_name;
-                $order->last_name = $request->last_name;
-                $order->contact_no = $request->contact_no;
+                $order->shipping_price = $request->shipping_price ? $request->shipping_price : '1000';
+                $order->payment_status = $request->payment_status ? $request->payment_status : 2;
+                $order->order_status = $request->order_status ? $request->order_status : 2;
+                $order->payment_method = $request->payment_method ? $request->payment_method : 'COD';
+                $order->total_price = $product_detail->selling_price * $request->product_qty;
+                $order->country = $request->country ? $request->country : 'India';
+                $order->state = $request->state ? $request->state : 'Gujarat';
+                $order->contact_no = $request->contact_no ? $request->contact_no : '0123456789';
+                $order->city = $request->city ? $request->city : 'Surat';
+                $order->first_name = $request->first_name ? $request->first_name : 'User Name';
+                $order->last_name = $request->last_name ? $request->last_name : 'User Last Name';
+                $order->shippping_address = $request->shippping_address ? $request->shippping_address : 'User Address';
                 $order->save();
-                
-                foreach ($products as $thisProduct) {
-    
-                    $product_list = Product::where('id',$thisProduct->id)->first();
-                    $product_total_price = ($thisProduct->qty) * ($thisProduct->qty * $product_list->selling_price);
 
-                    $order_pro = new OrderProducts;
-                    $order_pro->order_id = $order->id;
-                    $order_pro->product_id = $thisProduct->id;
-                    $order_pro->product_quantity = $thisProduct->qty;
-                    $order_pro->product_name = $product_list->name;
-                    $order_pro->product_slug = $product_list->slug;
-                    $order_pro->unit_price = $thisProduct->qty * $product_list->selling_price;
-                    $order_pro->product_total_price = $product_total_price;
-                    $order_pro->save();
+                $order_product = new OrderProducts();
+                $order_product->order_id = $order->id;
+                $order_product->product_id = $product_detail->id;
+                $order_product->product_name = $product_detail->name;
+                $order_product->product_slug = $product_detail->slug;
+                $order_product->product_quantity = $request->product_qty;
+                $order_product->unit_price = $product_detail->selling_price;
+                $order_product->product_total_price = $request->product_qty * $product_detail->selling_price;
+                $order_product->save();
 
-                    $cart = new BuyNow();
-                    $cart->product_id = $thisProduct->id;
-                    $cart->user_id = Auth::user()->id;
-                    $cart->product_qty = $thisProduct->qty;
-                    $cart->subtotal = $product_list->selling_price;
-                    $cart->total = ($thisProduct->qty * $product_list->selling_price);
-                    $cart->save();
+                $order_payment = new Payment();
+                $order_payment->payment_method = $request->payment_method ? $request->payment_method : 'COD';
+                $order_payment->user_id = auth()->user()->id;
+                $order_payment->order_id = $order->id;
+                $order_payment->product_id = $product_detail->id;
+                $order_payment->transaction_id = $request->transaction_id ? $request->transaction_id : '';
+                $order_payment->amount = $request->product_qty * $product_detail->selling_price;
+                $order_payment->payment_amount = ($request->product_qty) * ($request->product_qty * $product_detail->selling_price);
+                $order_payment->payer_email = auth()->user()->email;
+                $order_payment->payment_status = $request->payment_status ? $request->payment_status : 2;
+                $order_payment->save();
 
-                    $payment = new Payment();
-                    $payment->payment_method = $request->payment_method;
-                    $payment->user_id = auth()->user()->id;
-                    $payment->order_id = $order->id;
-                    $payment->product_id = $thisProduct->id;
-                    $payment->amount = $thisProduct->qty * $product_list->selling_price;
-                    $payment->payment_amount = $product_total_price;
-                    $payment->payer_email = auth()->user()->email;
-                    $payment->payment_status = $request->payment_status;
-                    $payment->save();
-                }
-
-                $cod_check = $request->cash_on_delivery_check;
-                if($cod_check == 'COD'){
-                    BuyNow::where('user_id',auth()->user()->id)->delete(); 
-                }
-
-                $order_id = Order::with('orderProduct.products.product_galleries')->where('id',$order->id)->select('id','payment_status','order_status','shippping_address','order_number','payment_method')->first();
-                
                 Order::where('id',$order->id)->update(['order_number' => '#10000'.$order->id]);
-                return response()->json(['success' => 'Order Created Successfully','order_id' => $order->id,
-                'orderUserDetail' => $order_id],200);     
+                return response()->json(['success' => 'Product Buy Now Success'],200);
             }
         }
     }
@@ -136,7 +141,7 @@ class BuyNowController extends Controller
                         
                         $total = $cart_check->subtotal * $cart_check->product_qty; 
                         // Update Total In DataBase
-                        $cart_check = BuyNow::where('user_id', auth()->user()->id)->update(['total' => $total]);
+                        $cart_check = BuyNow::where(['user_id'=> auth()->user()->id, 'product_id' => $request->product_id])->update(['total' => $total]);
                         return response()->json(['success' => 'Product Cart Quantity Update'],200);
                     }
                 }

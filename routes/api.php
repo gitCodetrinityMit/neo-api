@@ -133,6 +133,7 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
 
     // Buy Now Add
     Route::controller(BuyNowController::class)->group(function(){
+        Route::get('/buynow-list', 'buyNowList')->name('product.buy-now-list');
         Route::post('/product-buynow','productBuyNow')->name('product.buy-now');
         Route::post('/update-buynow-product', 'updateProductBuyNow')->name('product.buy-now-update');
         Route::post('/cancel-buynow', 'cancelBuyNow')->name('product.cancel-buy-now');

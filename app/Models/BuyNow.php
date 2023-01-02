@@ -11,7 +11,7 @@ class BuyNow extends Model
     protected $table = 'buy_nows';
     
     public function products() {
-        return $this->belongsTo(Product::class,'id');
+        return $this->belongsTo(Product::class,'product_id','id');
     }
 
     public function user() {
