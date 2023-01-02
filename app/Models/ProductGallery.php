@@ -9,8 +9,8 @@ class ProductGallery extends Model
 {
     use HasFactory;
     protected $table = 'product_galleries';
-    protected $primarykey = 'id';
-    protected $fillable = ['product_id'];
+    // protected $guarded = ['id'];
+    protected $fillable = ['id','product_id','image'];
 
     /**
      * Product Gallery related with Product table for get Product Image wise get Product data.

@@ -327,7 +327,7 @@ class AuthController extends Controller
             ];
 
             User::where('id',$admin_auth)->update($admin_update);
-            return response()->json(['success' => 'Admin Profile Updated'],200);
+            return response()->json(['success' => 'Admin Profile Updated', 'adminData' => $admin_update],200);
         }
     }
 

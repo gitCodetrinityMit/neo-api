@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Cart;
+use App\Models\Order;
+use App\Models\OrderProducts;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use App\Models\ProductGallery;
@@ -283,11 +286,24 @@ class ProductController extends Controller
      * 
      */
     public function deleteProduct($id)
-    {
-        $product = Product::where('id', $id)->first();
-        $product->delete();
-
-        return response()->json(['success' => 'Product Deleted Successfully',],200);
+    {   
+        if((Cart::where('product_id',$id) && OrderProducts::where('product_id',$id)->exists()) ){
+            return response()->json(['error' => 'Something Wrong!!!'],401);
+        }
+        $product_images = ProductGallery::where('product_id', $id)->get();
+        foreach ($product_images as $productImage) {
+            if($productImage){
+                $imagepath = public_path()."/storage/product/$productImage->image";
+                $result = File::exists($imagepath);
+                if($result){
+                    File::delete($imagepath);
+                }
+            }
+        }
+        ProductGallery::where('product_id', $id)->delete();
+        ProductCategory::where('product_id', $id)->delete();
+        Product::where('id', $id)->delete();
+        return response()->json(['success' => 'Product Deleted Successfully'],200);
     }
 
     /**

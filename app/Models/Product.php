@@ -13,15 +13,18 @@ class Product extends Model
 {
     use HasFactory;
     protected $table = 'products';
-    protected $primarykey = 'id';
+    protected $guarded = ['id'];
     // protected $fillabele = ['name','description'];
 
     public static function boot() {
         parent::boot();
 
         self::deleting(function($products) {
+            // dump($products);
             $products->product_galleries()->each(function($images) {
+                // dump($images);
                 $imagepath = public_path()."/storage/$images->image";
+                // dump($imagepath);
                 $result = File::exists($imagepath);
                 if($result)
                 {
@@ -32,6 +35,7 @@ class Product extends Model
             });
 
             $products->product_category()->each(function($detail){
+                // dump($detail);
                 $detail->delete();
             });
         });
@@ -43,7 +47,8 @@ class Product extends Model
      * @return Relation
      * 
      */
-    public function category(){
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
@@ -53,7 +58,8 @@ class Product extends Model
      * @return Relation
      * 
      */
-    public function product_galleries(){
+    public function product_galleries()
+    {
         return $this->hasMany(ProductGallery::class,'product_id','id');
     }
 
@@ -81,7 +87,13 @@ class Product extends Model
     {
         return $this->hasMany(Payment::class);
     }
-    public function orderProduct(){
+    public function orderProduct()
+    {
         return $this->hasMany(OrderProducts::class, 'product_id','id');
+    }
+
+    public function buy_now() 
+    {
+        return $this->hasMany(BuyNow::class);
     }
 }
