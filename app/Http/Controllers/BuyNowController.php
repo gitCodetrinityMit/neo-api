@@ -94,7 +94,10 @@ class BuyNowController extends Controller
                 $order_payment->save();
 
                 Order::where('id',$order->id)->update(['order_number' => '#10000'.$order->id]);
-                return response()->json(['success' => 'Product Buy Now Success'],200);
+
+                $order_id = Order::with('orderProduct.products.product_galleries')->where('id',$order->id)->select('id','payment_status','order_status','shippping_address','order_number','payment_method')->first();
+
+                return response()->json(['success' => 'Product Buy Now Success', 'order_number' => $order->id, 'orderDetail' => $order_id],200);
             }
         }
     }
