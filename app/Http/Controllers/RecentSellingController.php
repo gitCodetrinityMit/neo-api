@@ -31,7 +31,7 @@ class RecentSellingController extends Controller
     public function todayOrderList()
     {
         $today_orders = Order::with(['orderProduct'=> function($query){
-            $query->select('id','order_id','product_name');
+            $query->select('id','order_id','product_name','unit_price','product_total_price');
         }])
         ->select('id','order_number','user_id','order_status')
         ->whereDate('created_at', date('Y-m-d'));
