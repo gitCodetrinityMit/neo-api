@@ -69,7 +69,16 @@ class CartController extends Controller
                         $total = $cart_check[0]->subtotal_data; 
                         // Update Total In DataBase
                         $cart_check = Cart::where('user_id', auth()->user()->id)->update(['total' => $total]);
-                        return response()->json(['success' => 'Product Cart Quantity Update'],200);
+
+                        // Cart Item Count
+                        $cart_count = Cart::where('user_id',auth()->user()->id)->select('id')->count();
+                        if($cart_count > 0){
+                            $cart_total = 0;
+                            $cart_total = $cart_count + $cart_total;
+                        }else{
+                            return response()->json(['error' => 'Cart Data Not Found!!!'],401);
+                        }
+                        return response()->json(['cartTotal' =>  $cart_total, 'success' => 'Product Cart Quantity Update'],200);
                     }
                 }
             }else{

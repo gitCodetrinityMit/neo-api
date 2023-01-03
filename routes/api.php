@@ -86,6 +86,10 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         Route::post('/update-order-status/{id}','updateOrderStatus')->name('order-status.update');
         Route::get('/cancel-order/{id}', 'cancelOrder')->name('auto.cancel-order');
     });
+
+    Route::controller(RecentSellingController::class)->group(function() {
+        Route::get('/recent-selling-product', 'recentSellingProduct')->name('product.recent-selling');
+    });
 });
 
 /*
