@@ -11,6 +11,7 @@ use App\Http\Controllers\WhistlistController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\ProfileController;
 use App\Http\Controllers\BuyNowController;
+use App\Http\Controllers\RecentSellingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -89,6 +90,7 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
 
     Route::controller(RecentSellingController::class)->group(function() {
         Route::get('/recent-selling-product', 'recentSellingProduct')->name('product.recent-selling');
+        Route::get('/today-order', 'todayOrderList')->name('product.today-orders');
     });
 });
 
